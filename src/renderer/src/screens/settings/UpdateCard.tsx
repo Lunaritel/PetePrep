@@ -11,7 +11,7 @@ function statusText(update: UpdateState, version: string): string {
     case 'unavailable':
       return update.reason;
     case 'idle':
-      return 'DECAPete only looks for updates when you ask, or if you turn on automatic checks below.';
+      return 'PetePrep only looks for updates when you ask, or if you turn on automatic checks below.';
     case 'checking':
       return 'Checking for updates…';
     case 'not-available':
@@ -21,7 +21,7 @@ function statusText(update: UpdateState, version: string): string {
     case 'downloading':
       return `Downloading the update… ${update.percent}%`;
     case 'downloaded':
-      return `Version ${update.version} is ready. Restart DECAPete to finish installing it.`;
+      return `Version ${update.version} is ready. Restart PetePrep to finish installing it.`;
     case 'error':
       return update.message;
   }
@@ -57,7 +57,7 @@ export function UpdateCard() {
     <div className={card}>
       <h2 className="mb-1 text-lg font-bold text-ink">Updates</h2>
       <p className="mb-4 text-sm text-ink">
-        <strong>DECAPete</strong> · version {version}
+        <strong>PetePrep</strong> · version {version}
       </p>
 
       <div className="mb-4 min-h-6" role="status" aria-live="polite">
@@ -117,7 +117,7 @@ export function UpdateCard() {
       </label>
 
       <p className="mt-4 text-xs text-muted">
-        Checking for updates is the only time DECAPete uses the internet. It asks GitHub whether a newer version exists and sends
+        Checking for updates is the only time PetePrep uses the internet. It asks GitHub whether a newer version exists and sends
         nothing about you or your exams.
       </p>
     </div>

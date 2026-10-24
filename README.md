@@ -1,4 +1,4 @@
-# DECAPete
+# PetePrep
 
 An offline Windows app that turns a DECA exam PDF into a practice engine. Import the exam
 PDF (questions plus answer key and explanations), practice it, and keep re-testing the
@@ -11,12 +11,12 @@ questions you have not mastered until every one sticks.
 
 ## Install (students)
 
-1. Download `DECAPete-Setup-<version>.exe` (installer) or the `.zip` (portable) from the latest GitHub Release.
+1. Download `PetePrep-Setup-<version>.exe` (installer) or the `.zip` (portable) from the latest GitHub Release.
 2. Windows SmartScreen may say the app is unrecognised because it is not code signed. Choose **More info**, then **Run anyway**.
 3. Open the app, choose **Import exam**, and pick your DECA exam PDF.
 
 Your data stays on your computer. Use **Settings > Export backup** to keep a copy. The app also saves a
-backup to `Documents\DECAPete Backups` after each round (you can turn that off in Settings).
+backup to `Documents\PetePrep Backups` after each round (you can turn that off in Settings).
 
 ## Updates
 
@@ -62,8 +62,8 @@ src/renderer/src/    React UI: storage (IndexedDB via Dexie), study service, scr
 
 ## Legal
 
-- **License.** DECAPete is released under the MIT License (see `LICENSE`). Open-source components keep their own licenses, listed in `THIRD_PARTY_NOTICES.txt`.
-- **Not affiliated with DECA.** DECAPete is an independent project. It is not affiliated with, endorsed by or sponsored by DECA Inc. or the MBA Research and Curriculum Center. DECA is a registered trademark of DECA Inc.
+- **License.** PetePrep is released under the MIT License (see `LICENSE`). Open-source components keep their own licenses, listed in `THIRD_PARTY_NOTICES.txt`.
+- **Not affiliated with DECA.** PetePrep is an independent project. It is not affiliated with, endorsed by or sponsored by DECA Inc. or the MBA Research and Curriculum Center. DECA is a registered trademark of DECA Inc.
 - **No exam content.** This repository and the app contain no exam questions, answers or explanations. You import your own PDF and it stays on your computer. You are responsible for having the right to use any PDF you import.
 - **Accuracy.** Questions, answers and explanations are read automatically from the PDF and can contain mistakes. Check anything important against the original. No exam result is guaranteed.
 - **Privacy.** No accounts, no analytics, no telemetry. The only network request is the optional update check, which asks GitHub whether a newer release exists.

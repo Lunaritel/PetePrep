@@ -12,7 +12,7 @@ export interface PickedText {
 }
 
 const api = {
-  appName: 'DECAPete',
+  appName: 'PetePrep',
   version: '0.1.0',
   /** Native "open" dialog filtered to PDFs. Resolves null if the user cancels. */
   openPdf: (): Promise<PickedFile | null> => ipcRenderer.invoke('file:open-pdf'),
@@ -21,7 +21,7 @@ const api = {
     ipcRenderer.invoke('file:save-text', suggestedName, text),
   /** Native "open" dialog for a .json backup. Resolves null if cancelled. */
   openTextFile: (): Promise<PickedText | null> => ipcRenderer.invoke('file:open-text'),
-  /** Writes into Documents/DECAPete Backups without a dialog; resolves the full path. */
+  /** Writes into Documents/PetePrep Backups without a dialog; resolves the full path. */
   writeAutoBackup: (fileName: string, text: string): Promise<string> =>
     ipcRenderer.invoke('file:auto-backup', fileName, text),
   /** Asks the update server whether a newer version exists. The only network request the app can make. */

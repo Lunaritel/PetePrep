@@ -1,28 +1,28 @@
-DECAPete - License and Important Notices
+PetePrep - License and Important Notices
 
 Please read this before installing.
 
 1. WHAT THIS IS
-DECAPete is a free, independent study tool. It reads an exam PDF that you provide
+PetePrep is a free, independent study tool. It reads an exam PDF that you provide
 and turns it into practice questions on your own computer.
 
 2. NOT AFFILIATED WITH DECA
-DECAPete is not affiliated with, endorsed by, or sponsored by DECA Inc. or the MBA
+PetePrep is not affiliated with, endorsed by, or sponsored by DECA Inc. or the MBA
 Research and Curriculum Center. "DECA" is a registered trademark of DECA Inc. The
 name is used here only to describe the kind of exam the app can read.
 
 3. NO EXAM CONTENT IS INCLUDED
-DECAPete does not contain, sell, or share any exam questions, answers, or explanations.
+PetePrep does not contain, sell, or share any exam questions, answers, or explanations.
 You are responsible for making sure you have the right to use any PDF you import, and
 for following the terms that come with it. Everything you import stays on your computer.
 
 4. ACCURACY
 Questions, answers, and explanations are read automatically from your PDF. The reading
-can be wrong. Check anything important against the original document. DECAPete does
+can be wrong. Check anything important against the original document. PetePrep does
 not guarantee any exam result.
 
 5. PRIVACY
-DECAPete has no accounts and collects no data. The only time it uses the internet is
+PetePrep has no accounts and collects no data. The only time it uses the internet is
 to check for a newer version of itself, and only when you press "Check for updates" or
 turn on automatic checks in Settings.
 
@@ -47,5 +47,5 @@ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFT
 OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 7. OPEN-SOURCE COMPONENTS
-DECAPete includes open-source software under its own licenses. They are listed in
+PetePrep includes open-source software under its own licenses. They are listed in
 THIRD_PARTY_NOTICES.txt in the installation folder (resources).

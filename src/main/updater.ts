@@ -7,7 +7,7 @@ import type { AutoUpdaterLike } from './updateService';
 
 /** The NSIS installer drops an uninstaller next to the exe; the portable zip does not. */
 function installedByInstaller(): boolean {
-  return existsSync(join(dirname(process.execPath), 'Uninstall DECAPete.exe'));
+  return existsSync(join(dirname(process.execPath), 'Uninstall PetePrep.exe'));
 }
 
 /**
@@ -16,7 +16,7 @@ function installedByInstaller(): boolean {
  */
 export function registerUpdater(): UpdateService {
   // Test hook for local feeds. It is read only from an unpackaged run, never from the shipped app.
-  const testFeed = !app.isPackaged ? process.env.DECAPETE_TEST_FEED : undefined;
+  const testFeed = !app.isPackaged ? process.env.PETEPREP_TEST_FEED : undefined;
   if (testFeed) {
     autoUpdater.setFeedURL({ provider: 'generic', url: testFeed });
     autoUpdater.forceDevUpdateConfig = true;

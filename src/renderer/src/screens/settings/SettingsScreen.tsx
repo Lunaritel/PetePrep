@@ -10,7 +10,7 @@ import { ConfirmDialog } from '../library/ConfirmDialog';
 import { UpdateCard } from './UpdateCard';
 import { btnDanger, btnPrimary, btnSecondary, card } from '../library/ui';
 
-const BACKUP_FOLDER = 'Documents\\DECAPete Backups';
+const BACKUP_FOLDER = 'Documents\\PetePrep Backups';
 const WIPE_WORD = 'DELETE';
 
 type Notice = { kind: 'success' | 'info' | 'error'; text: string } | null;
@@ -144,7 +144,7 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
       <div className={card}>
         <h2 className="mb-2 text-lg font-bold text-ink">About</h2>
         <p className="text-sm text-ink">
-          <strong>DECAPete</strong> · version {version}
+          <strong>PetePrep</strong> · version {version}
         </p>
         <p className="mt-2 text-sm text-muted">
           Everything runs on this computer. There are no accounts, no tracking and no telemetry, and no exam content is
@@ -152,7 +152,7 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
           is checking for updates, and only when you ask or turn automatic checks on.
         </p>
         <p className="mt-2 text-sm text-muted">
-          DECAPete is an independent study tool. It is not affiliated with, endorsed by or sponsored by DECA Inc. or the MBA
+          PetePrep is an independent study tool. It is not affiliated with, endorsed by or sponsored by DECA Inc. or the MBA
           Research and Curriculum Center. DECA is a registered trademark of DECA Inc. Answers and explanations are read
           automatically from your PDF and can contain mistakes, so check anything important against the original. Only
           import exams you are allowed to use. Open-source licenses are in THIRD_PARTY_NOTICES.txt in the app&apos;s

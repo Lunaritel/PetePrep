@@ -125,7 +125,7 @@ export function Shell({ repo }: { repo: Repository }) {
             className="min-h-11 text-lg font-bold tracking-tight text-ink"
             onClick={() => navigate({ name: 'library' })}
           >
-            DECAPete
+            PetePrep
           </button>
           {!studying && (
             <nav aria-label="Main" className="flex gap-1">

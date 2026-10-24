@@ -68,7 +68,7 @@ function registerIpc(): void {
     if (typeof fileName !== 'string' || typeof text !== 'string') throw new Error('Invalid backup request.');
     const safe = basename(fileName).replace(/[^\w.-]+/g, '_');
     if (!safe.endsWith('.json')) throw new Error('Backups must be .json files.');
-    const dir = join(app.getPath('documents'), 'DECAPete Backups');
+    const dir = join(app.getPath('documents'), 'PetePrep Backups');
     await mkdir(dir, { recursive: true });
     const path = join(dir, safe);
     await writeFile(path, text, 'utf8');

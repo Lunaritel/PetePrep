@@ -385,7 +385,7 @@ export function runRepositoryContract(name: string, factory: () => Promise<Repos
       it('exports a well-formed backup', async () => {
         await populate();
         const backup = await repo.exportAll();
-        expect(backup.format).toBe('deca-mastery-backup');
+        expect(backup.format).toBe('peteprep-backup');
         expect(backup.version).toBe(1);
         expect(backup.exams).toHaveLength(2);
         expect(backup.questions).toHaveLength(5);
@@ -435,7 +435,7 @@ export function runRepositoryContract(name: string, factory: () => Promise<Repos
 
       it('an empty backup empties the database', async () => {
         await populate();
-        await repo.importAll({ format: 'deca-mastery-backup', version: 1, exportedAt: 'x', exams: [], questions: [], sessions: [], answers: [] });
+        await repo.importAll({ format: 'peteprep-backup', version: 1, exportedAt: 'x', exams: [], questions: [], sessions: [], answers: [] });
         expect(await repo.listExams()).toEqual([]);
       });
 
@@ -449,10 +449,10 @@ export function runRepositoryContract(name: string, factory: () => Promise<Repos
         });
 
         it('not an object / wrong format / wrong version', async () => {
-          await expectBackupRejected(repo, null, /not a DECAPete backup/);
-          await expectBackupRejected(repo, 'hello', /not a DECAPete backup/);
-          await expectBackupRejected(repo, [], /not a DECAPete backup/);
-          await expectBackupRejected(repo, { ...clone(), format: 'something-else' }, /not a DECAPete backup/);
+          await expectBackupRejected(repo, null, /not a PetePrep backup/);
+          await expectBackupRejected(repo, 'hello', /not a PetePrep backup/);
+          await expectBackupRejected(repo, [], /not a PetePrep backup/);
+          await expectBackupRejected(repo, { ...clone(), format: 'something-else' }, /not a PetePrep backup/);
           await expectBackupRejected(repo, { ...clone(), version: 2 }, /version/i);
         });
 

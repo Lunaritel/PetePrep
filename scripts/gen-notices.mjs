@@ -29,10 +29,10 @@ const bar = '='.repeat(78);
 const parts = [
   'THIRD-PARTY NOTICES',
   '',
-  'DECAPete includes the open-source software listed below. Each component is used under',
-  'its own license, reproduced here. DECAPete itself is licensed separately (see LICENSE).',
+  'PetePrep includes the open-source software listed below. Each component is used under',
+  'its own license, reproduced here. PetePrep itself is licensed separately (see LICENSE).',
   '',
-  'DECAPete runs on Electron, which bundles Chromium and Node.js. Their licenses ship with',
+  'PetePrep runs on Electron, which bundles Chromium and Node.js. Their licenses ship with',
   'the app in LICENSE.electron.txt and LICENSES.chromium.html next to the executable.',
   '',
 ];

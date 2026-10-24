@@ -37,7 +37,7 @@ function snapshot(): DatabaseSnapshot {
 describe('serialiseBackup', () => {
   it('encodes screenshots as base64 PNG and leaves other questions without the field', async () => {
     const backup = await serialiseBackup(snapshot());
-    expect(backup).toMatchObject({ format: 'deca-mastery-backup', version: 1 });
+    expect(backup).toMatchObject({ format: 'peteprep-backup', version: 1 });
     expect(backup.questions[0].snapshotPngBase64).toBe(TINY_PNG_BASE64);
     expect('snapshotPngBase64' in backup.questions[1]).toBe(false);
     expect(backup.questions.every((q) => !('snapshot' in q))).toBe(true);
@@ -79,7 +79,7 @@ describe('parseBackup', () => {
   });
 
   it('accepts an empty database', async () => {
-    const parsed = await parseBackup({ format: 'deca-mastery-backup', version: 1, exams: [], questions: [], sessions: [], answers: [] });
+    const parsed = await parseBackup({ format: 'peteprep-backup', version: 1, exams: [], questions: [], sessions: [], answers: [] });
     expect(parsed).toEqual({ exams: [], questions: [], sessions: [], answers: [] });
   });
 
@@ -89,7 +89,7 @@ describe('parseBackup', () => {
       undefined,
       42,
       'text',
-      { format: 'deca-mastery-backup', version: 1 },
+      { format: 'peteprep-backup', version: 1 },
       { ...good, exams: 'nope' },
       { ...good, exams: [null] },
       { ...good, questions: [1] },

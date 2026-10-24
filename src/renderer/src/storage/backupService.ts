@@ -36,7 +36,7 @@ export function setAutoBackupEnabled(enabled: boolean): void {
   }
 }
 
-/** Writes a timestamped backup to Documents/DECAPete Backups when enabled. Never throws; resolves the path or null. */
+/** Writes a timestamped backup to Documents/PetePrep Backups when enabled. Never throws; resolves the path or null. */
 export async function maybeAutoBackup(repo: Repository): Promise<string | null> {
   try {
     const deca = bridge();
@@ -54,7 +54,7 @@ export async function exportBackupToFile(repo: Repository): Promise<string | nul
   const deca = bridge();
   if (!deca) throw new Error('Saving a backup is only available in the desktop app.');
   const backup = await repo.exportAll();
-  return deca.saveTextFile(`decapete-backup-${dateStamp(new Date())}.json`, JSON.stringify(backup));
+  return deca.saveTextFile(`peteprep-backup-${dateStamp(new Date())}.json`, JSON.stringify(backup));
 }
 
 /** Native open dialog -> validate -> replace database. Resolves true if restored, false if cancelled. Throws BackupFormatError on a bad file. */
@@ -67,7 +67,7 @@ export async function restoreBackupFromFile(repo: Repository): Promise<boolean> 
   try {
     parsed = JSON.parse(picked.text);
   } catch {
-    throw new BackupFormatError('This file is not a DECAPete backup (it is not valid JSON).');
+    throw new BackupFormatError('This file is not a PetePrep backup (it is not valid JSON).');
   }
   await repo.importAll(parsed);
   return true;

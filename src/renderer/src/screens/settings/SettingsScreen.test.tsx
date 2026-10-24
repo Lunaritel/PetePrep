@@ -83,12 +83,12 @@ describe('SettingsScreen', () => {
   });
 
   it('shows the plain-language reason when a backup file is bad', async () => {
-    backup.restoreBackupFromFile.mockRejectedValue(new BackupFormatError('This file is not a DECAPete backup.'));
+    backup.restoreBackupFromFile.mockRejectedValue(new BackupFormatError('This file is not a PetePrep backup.'));
     render(<SettingsScreen repo={createMemoryRepository()} navigate={vi.fn()} />);
     await userEvent.click(screen.getByRole('button', { name: /Restore from backup/ }));
     await userEvent.click(screen.getByRole('button', { name: /Choose backup file/ }));
     const alert = await screen.findByRole('alert');
-    expect(alert).toHaveTextContent('This file is not a DECAPete backup.');
+    expect(alert).toHaveTextContent('This file is not a PetePrep backup.');
     expect(alert).toHaveTextContent('Your current data was not changed.');
   });
 
@@ -96,7 +96,7 @@ describe('SettingsScreen', () => {
     render(<SettingsScreen repo={createMemoryRepository()} navigate={vi.fn()} />);
     const toggle = screen.getByRole('switch', { name: /Back up automatically/ });
     expect(toggle).toBeChecked();
-    expect(screen.getByText('Documents\\DECAPete Backups')).toBeInTheDocument();
+    expect(screen.getByText('Documents\\PetePrep Backups')).toBeInTheDocument();
     backup.isAutoBackupEnabled.mockReturnValue(false);
     await userEvent.click(toggle);
     expect(backup.setAutoBackupEnabled).toHaveBeenCalledWith(false);

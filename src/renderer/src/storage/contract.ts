@@ -68,7 +68,7 @@ export type NewAnswer = Omit<AnswerRow, 'id' | 'answeredAt'> & { answeredAt?: st
 export type BackupQuestion = Omit<QuestionRow, 'snapshot'> & { snapshotPngBase64?: string };
 
 export interface BackupFile {
-  format: 'deca-mastery-backup';
+  format: 'peteprep-backup';
   version: 1;
   exportedAt: string;
   exams: ExamRow[];

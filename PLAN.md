@@ -1,4 +1,4 @@
-# DECA Mastery — Build Plan
+# PetePrep — Build Plan
 
 An offline Windows desktop app that turns a DECA exam PDF into a practice engine:
 import the PDF, extract the questions and answer key, drill missed questions with

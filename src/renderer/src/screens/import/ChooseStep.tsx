@@ -64,7 +64,7 @@ export function ChooseStep({ error, canUseNativePicker, onNativePick, onFile }: 
           uploaded.
         </p>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted">
-          Only import exams you are allowed to use. DECAPete does not include or share any exam content.
+          Only import exams you are allowed to use. PetePrep does not include or share any exam content.
         </p>
         <div className="mt-6 flex flex-col items-center gap-3">
           <button

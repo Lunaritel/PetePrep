@@ -1,5 +1,5 @@
 {
-  "name": "decapete",
+  "name": "peteprep",
   "version": "0.1.0",
   "description": "DECA exam practice app with mastery-based retesting",
   "main": "out/main/index.js",
@@ -45,8 +45,8 @@
     "vitest": "^2.1.8"
   },
   "build": {
-    "appId": "com.decapete.app",
-    "productName": "DECAPete",
+    "appId": "com.peteprep.app",
+    "productName": "PetePrep",
     "directories": {
       "output": "release",
       "buildResources": "build"
@@ -83,7 +83,7 @@
       {
         "provider": "github",
         "owner": "Lunaritel",
-        "repo": "DECAPete",
+        "repo": "PetePrep",
         "releaseType": "release"
       }
     ],
@@ -98,5 +98,5 @@
       }
     ]
   },
-  "author": "DECAPete"
+  "author": "PetePrep"
 }

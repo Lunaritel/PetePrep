@@ -137,6 +137,6 @@ describe('UpdateCard', () => {
   it('states plainly that updates are the only internet use', async () => {
     installBridge();
     render(<UpdateCard />);
-    expect(await screen.findByText(/only time DECAPete uses the internet/i)).toBeInTheDocument();
+    expect(await screen.findByText(/only time PetePrep uses the internet/i)).toBeInTheDocument();
   });
 });
