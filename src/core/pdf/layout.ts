@@ -2,6 +2,9 @@ import type { Line, PageItems, TextItem } from './types';
 
 const Y_TOLERANCE = 2;
 const SPACE_GAP = 1;
+const ADJACENT_BAND_GAP = 6;
+// Outer page edge: anything here is page furniture (a one-off footer, page number) even if it never repeats.
+const EDGE_FRACTION = 0.05;
 
 export function buildLines(page: PageItems): Line[] {
   const sorted = [...page.items].sort((a, b) => b.y - a.y || a.x - b.x);
@@ -27,12 +30,13 @@ export function buildLines(page: PageItems): Line[] {
 const DIGITS = /\d+/g;
 
 function normalise(text: string): string {
-  return text.replace(DIGITS, '#');
+  // A superscript (R) splits one footer into pieces on some pages only; fold those differences away.
+  return text.replace(/[®™]/g, '').replace(/\s+([,.;])/g, '$1').replace(DIGITS, '#').trim();
 }
 
 /**
  * Drops running headers/footers: lines in the top or bottom band of a page whose
- * digit-normalised text repeats on at least half of the pages.
+ * digit-normalised text repeats on a quarter or more of the pages.
  */
 export function stripRunningText(pages: PageItems[], lines: Line[][]): Line[][] {
   if (pages.length < 3) return lines;
@@ -51,12 +55,19 @@ export function stripRunningText(pages: PageItems[], lines: Line[][]): Line[][] 
   });
   // Question pages and key pages carry different headers, so each may be well under half the document.
   const threshold = Math.max(3, pages.length * 0.25);
-  return lines.map((pageLines, i) =>
-    pageLines.filter((line) => {
+  return lines.map((pageLines, i) => {
+    const dropped = pageLines.filter((line) => {
       const key = seen(pages[i], line);
-      return !key || (counts.get(key) ?? 0) < threshold;
-    }),
-  );
+      const onEdge = line.y < pages[i].height * EDGE_FRACTION || line.y > pages[i].height * (1 - EDGE_FRACTION);
+      return onEdge || (key !== null && (counts.get(key) ?? 0) >= threshold);
+    });
+    return pageLines.filter((line) => {
+      if (dropped.includes(line)) return false;
+      // A stray glyph (e.g. a superscript "(R)") can sit a few points off a stripped footer line.
+      const inBand = seen(pages[i], line) !== null;
+      return !(inBand && dropped.some((d) => Math.abs(d.y - line.y) <= ADJACENT_BAND_GAP));
+    });
+  });
 }
 
 /** A key page carries "KEY" in its running header (top band). */

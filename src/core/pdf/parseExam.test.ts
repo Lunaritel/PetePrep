@@ -4,8 +4,8 @@ import { parseExamFromPages, parseExamPdf } from './parseExam';
 
 const PDF_DIR = '../pdfs';
 const EXAMS = [
-  { file: 'HS_Hospitality_Tourism_Cluster_Sample_Exam_20.pdf', code: '1206', q1Key: 3, q1Start: 'Janelle owns' },
-  { file: '69a1ee5b3ca1c1f9ba6535bf_Hospitality-District Exam.pdf', code: '1323', q1Key: 1, q1Start: 'To obtain a job promotion' },
+  { file: 'HS_Hospitality_Tourism_Cluster_Sample_Exam_20.pdf', code: '1206', q1Key: 3, q1Start: 'Janelle owns', reviewed: [47] },
+  { file: '69a1ee5b3ca1c1f9ba6535bf_Hospitality-District Exam.pdf', code: '1323', q1Key: 1, q1Start: 'To obtain a job promotion', reviewed: [] },
 ];
 
 describe('parseExamPdf (real exams)', () => {
@@ -29,6 +29,14 @@ describe('parseExamPdf (real exams)', () => {
       // Q41 ends a page; its last option must not swallow the next page's running header.
       expect(parsed.questions[40].options[3]).not.toMatch(/Test \d+/);
       expect(parsed.title).not.toMatch(/\d$/);
+      // No header, footer or citation text may leak into any parsed field.
+      const leak = /Test \d{3,}|Copyright|KEY|SOURCE|Retrieved|https?:|LAP-/;
+      for (const q of parsed.questions) {
+        for (const text of [q.prompt, ...q.options, q.explanation]) expect(text, `Q${q.number}`).not.toMatch(leak);
+      }
+      // Every key letter must agree with the rationale's opening words, or be reviewed by hand.
+      const unverified = parsed.report.issues.filter((i) => i.severity === 'warning').map((i) => i.question);
+      expect(unverified).toEqual(exam.reviewed);
     }, 30000);
   }
 });
