@@ -1,5 +1,5 @@
 import { joinWrapped } from './layout';
-import type { Line, ReportIssue } from './types';
+import type { Line, ReportIssue, SnapshotSegment } from './types';
 
 export interface RawQuestion {
   number: number;
@@ -7,12 +7,16 @@ export interface RawQuestion {
   options: string[];
   sourcePage: number;
   rawText: string;
+  /** Vertical extent of the question's own text on each page it touches (PDF y-up). */
+  extents: SnapshotSegment[];
 }
 
 const QUESTION_MARKER = /^(\d{1,3})\.$/;
 const OPTION_MARKER = /^([A-D])\.$/;
 const OPTION_LETTERS = 'ABCD';
 const COLUMN_TOLERANCE = 3;
+const LINE_ASCENT = 9;
+const LINE_DESCENT = 3;
 
 interface Draft {
   number: number;
@@ -20,6 +24,19 @@ interface Draft {
   promptParts: string[];
   optionParts: string[][];
   rawLines: string[];
+  extents: Map<number, SnapshotSegment>;
+}
+
+function track(draft: Draft, line: Line): void {
+  const top = line.y + LINE_ASCENT;
+  const bottom = line.y - LINE_DESCENT;
+  const seen = draft.extents.get(line.page);
+  if (seen) {
+    seen.top = Math.max(seen.top, top);
+    seen.bottom = Math.min(seen.bottom, bottom);
+  } else {
+    draft.extents.set(line.page, { page: line.page, top, bottom });
+  }
 }
 
 function afterMarker(line: Line, marker: string): string {
@@ -41,6 +58,7 @@ function finish(draft: Draft, issues: ReportIssue[]): RawQuestion {
     options,
     sourcePage: draft.sourcePage,
     rawText: draft.rawLines.join('\n'),
+    extents: [...draft.extents.values()],
   };
 }
 
@@ -75,7 +93,9 @@ export function parseQuestions(lines: Line[]): { questions: RawQuestion[]; issue
           promptParts: [afterMarker(line, first)],
           optionParts: [],
           rawLines: [line.text],
+          extents: new Map(),
         };
+        track(draft, line);
         lastNumber = n;
         lastMarkerX = line.x;
         continue;
@@ -84,6 +104,7 @@ export function parseQuestions(lines: Line[]): { questions: RawQuestion[]; issue
 
     if (!draft) continue;
     draft.rawLines.push(line.text);
+    track(draft, line);
 
     const o = OPTION_MARKER.exec(first);
     if (o && o[1] === OPTION_LETTERS[draft.optionParts.length]) {

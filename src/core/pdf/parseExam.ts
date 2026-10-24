@@ -1,4 +1,5 @@
 import { parseAnswerKey } from './answerKey';
+import { attachVisuals } from './attachVisuals';
 import { extractPages } from './extract';
 import { buildLines, isKeyPage, stripRunningText } from './layout';
 import { parseQuestions } from './questionParser';
@@ -37,6 +38,11 @@ export function parseExamFromPages(pages: PageItems[]): ParsedExam {
   const parsedQ = parseQuestions(questionLines);
   const parsedK = parseAnswerKey(keyLines);
   const merged = validateAndMerge(parsedQ.questions, parsedK.entries, pages.length);
+  const visuals = attachVisuals(parsedQ.questions, pages);
+  for (const q of merged.questions) {
+    const visual = visuals.get(q.number);
+    if (visual) q.visual = visual;
+  }
   const all = [...issues, ...parsedQ.issues, ...parsedK.issues, ...merged.issues];
 
   return {

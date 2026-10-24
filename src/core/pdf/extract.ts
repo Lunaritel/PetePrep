@@ -1,5 +1,6 @@
-import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { getDocument, OPS } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type { PageItems, TextItem } from './types';
+import { detectPageVisuals } from './visuals';
 
 interface RawTextItem {
   str: string;
@@ -33,7 +34,8 @@ export async function extractPages(data: Uint8Array): Promise<PageItems[]> {
           str: raw.str,
         });
       }
-      pages.push({ page: n, width: viewport.width, height: viewport.height, items });
+      const visuals = detectPageVisuals(await page.getOperatorList(), OPS, viewport.width, viewport.height);
+      pages.push({ page: n, width: viewport.width, height: viewport.height, items, visuals });
     }
   } finally {
     await task.destroy();

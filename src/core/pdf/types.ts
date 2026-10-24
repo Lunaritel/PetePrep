@@ -7,11 +7,30 @@ export interface TextItem {
   str: string;
 }
 
+export type VisualKind = 'image' | 'graphic';
+
+/** A picture or ruled/drawn region on a page, in PDF user space (origin bottom-left, y up). */
+export interface VisualRegion {
+  kind: VisualKind;
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+
+/** A horizontal band of one page to crop for a question screenshot (PDF user space, y up; top > bottom). */
+export interface SnapshotSegment {
+  page: number;
+  top: number;
+  bottom: number;
+}
+
 export interface PageItems {
   page: number;
   width: number;
   height: number;
   items: TextItem[];
+  visuals?: VisualRegion[];
 }
 
 export interface Line {
@@ -32,6 +51,8 @@ export interface ParsedQuestion {
   rawText: string;
   parseConfidence: number;
   hasLetterRefs: boolean;
+  /** Present when the question contains a picture, table or drawing that text extraction cannot capture. */
+  visual?: { kinds: VisualKind[]; segments: SnapshotSegment[] };
 }
 
 export type Severity = 'error' | 'warning';
