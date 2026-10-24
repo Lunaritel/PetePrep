@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parseAnswerKey } from './answerKey';
+import { fingerprint } from './testing/fingerprint';
 import { extractPages } from './extract';
 import { buildLines, isKeyPage, stripRunningText } from './layout';
 import type { Line, TextItem } from './types';
@@ -22,8 +23,8 @@ describe('parseAnswerKey (synthetic)', () => {
   it('joins wrapped explanations and stops at SOURCE blocks', () => {
     const { entries, issues } = parseAnswerKey([
       line(1, 700, [38, '1.'], [50, 'B']),
-      line(1, 690, [50, 'Career. Career goals are goals connected']),
-      line(1, 680, [50, 'with work.']),
+      line(1, 690, [50, 'Plumbing. Plumbing work is connected']),
+      line(1, 680, [50, 'with pipes.']),
       line(1, 670, [50, 'SOURCE:'], [118, 'PD:018 Set personal goals']),
       line(1, 660, [50, 'SOURCE:'], [118, 'LAP-PD-918']),
       line(1, 650, [50, 'Go for the Goal']),
@@ -35,7 +36,7 @@ describe('parseAnswerKey (synthetic)', () => {
       [1, 'B'],
       [2, 'D'],
     ]);
-    expect(entries[0].explanation).toBe('Career. Career goals are goals connected with work.');
+    expect(entries[0].explanation).toBe('Plumbing. Plumbing work is connected with pipes.');
     expect(entries[0].rawText).toContain('LAP-PD-918');
     expect(entries[0].explanation).not.toContain('SOURCE');
   });
@@ -92,12 +93,12 @@ describe('parseAnswerKey (synthetic)', () => {
 
 const pdfDir = resolve(__dirname, '../../../../pdfs');
 const real = [
-  { file: 'HS_Hospitality_Tourism_Cluster_Sample_Exam_20.pdf', letter: 'D', start: 'Franchisee. Franchising is' },
-  { file: '69a1ee5b3ca1c1f9ba6535bf_Hospitality-District Exam.pdf', letter: 'B', start: 'Career. Career goals' },
+  { file: 'HS_Hospitality_Tourism_Cluster_Sample_Exam_20.pdf', letter: 'D', print: '922bbbcc88169640' },
+  { file: '69a1ee5b3ca1c1f9ba6535bf_Hospitality-District Exam.pdf', letter: 'B', print: 'ba11df7a10d6c962' },
 ];
 
 describe('parseAnswerKey (real PDFs)', () => {
-  for (const { file, letter, start } of real) {
+  for (const { file, letter, print } of real) {
     const path = resolve(pdfDir, file);
     it.skipIf(!existsSync(path))(
       `parses 100 key entries from ${file}`,
@@ -115,7 +116,7 @@ describe('parseAnswerKey (real PDFs)', () => {
           expect(e.explanation).not.toContain('SOURCE:');
         }
         expect(entries[0].letter).toBe(letter);
-        expect(entries[0].explanation.startsWith(start)).toBe(true);
+        expect(fingerprint(entries[0].explanation)).toBe(print);
       },
       60000,
     );

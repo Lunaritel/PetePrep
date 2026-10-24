@@ -7,3 +7,6 @@ dist/
 coverage/
 *.tsbuildinfo
 .vite/
+
+# Exam PDFs are licensed third-party content and must never be committed
+*.pdf

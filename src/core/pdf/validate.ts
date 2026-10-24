@@ -9,7 +9,7 @@ function stripPunctuation(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 }
 
-/** The DECA key opens each rationale with the correct option's text ("Career. Career goals..."). */
+/** The DECA key opens each rationale with the correct option's text (the option, a period, then the explanation). */
 export function explanationAgrees(explanation: string, option: string): boolean {
   const wanted = stripPunctuation(option);
   return wanted !== '' && stripPunctuation(explanation).startsWith(wanted);

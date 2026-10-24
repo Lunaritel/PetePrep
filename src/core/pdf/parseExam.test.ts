@@ -1,11 +1,12 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { parseExamFromPages, parseExamPdf } from './parseExam';
+import { fingerprint } from './testing/fingerprint';
 
 const PDF_DIR = '../pdfs';
 const EXAMS = [
-  { file: 'HS_Hospitality_Tourism_Cluster_Sample_Exam_20.pdf', code: '1206', q1Key: 3, q1Start: 'Janelle owns', reviewed: [47] },
-  { file: '69a1ee5b3ca1c1f9ba6535bf_Hospitality-District Exam.pdf', code: '1323', q1Key: 1, q1Start: 'To obtain a job promotion', reviewed: [] },
+  { file: 'HS_Hospitality_Tourism_Cluster_Sample_Exam_20.pdf', code: '1206', q1Key: 3, q1Print: '262f04324249c8f8', reviewed: [47] },
+  { file: '69a1ee5b3ca1c1f9ba6535bf_Hospitality-District Exam.pdf', code: '1323', q1Key: 1, q1Print: '062c579ac560ead2', reviewed: [] },
 ];
 
 describe('parseExamPdf (real exams)', () => {
@@ -24,7 +25,7 @@ describe('parseExamPdf (real exams)', () => {
         expect(q.explanation).not.toBe('');
         expect(q.explanation).not.toContain('SOURCE:');
       }
-      expect(parsed.questions[0].prompt.startsWith(exam.q1Start)).toBe(true);
+      expect(fingerprint(parsed.questions[0].prompt)).toBe(exam.q1Print);
       expect(parsed.questions[0].correctIndex).toBe(exam.q1Key);
       // Q41 ends a page; its last option must not swallow the next page's running header.
       expect(parsed.questions[40].options[3]).not.toMatch(/Test \d+/);

@@ -63,6 +63,9 @@ export function ChooseStep({ error, canUseNativePicker, onNativePick, onFile }: 
           Pick the exam file with the questions and the answer key. The app reads it on this computer. Nothing is
           uploaded.
         </p>
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted">
+          Only import exams you are allowed to use. DECAPete does not include or share any exam content.
+        </p>
         <div className="mt-6 flex flex-col items-center gap-3">
           <button
             type="button"

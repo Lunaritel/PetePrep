@@ -59,3 +59,11 @@ src/renderer/src/    React UI: storage (IndexedDB via Dexie), study service, scr
 - The parser is calibrated on the MBA Research / DECA sample exam layout (single column, numbered questions, a key section with rationales). Other layouts may need the review screen to repair questions.
 - A table drawn only with aligned text (no ruled lines) is not detected as a figure.
 - Windows only. No code signing.
+
+## Legal
+
+- **License.** DECAPete is released under the MIT License (see `LICENSE`). Open-source components keep their own licenses, listed in `THIRD_PARTY_NOTICES.txt`.
+- **Not affiliated with DECA.** DECAPete is an independent project. It is not affiliated with, endorsed by or sponsored by DECA Inc. or the MBA Research and Curriculum Center. DECA is a registered trademark of DECA Inc.
+- **No exam content.** This repository and the app contain no exam questions, answers or explanations. You import your own PDF and it stays on your computer. You are responsible for having the right to use any PDF you import.
+- **Accuracy.** Questions, answers and explanations are read automatically from the PDF and can contain mistakes. Check anything important against the original. No exam result is guaranteed.
+- **Privacy.** No accounts, no analytics, no telemetry. The only network request is the optional update check, which asks GitHub whether a newer release exists.

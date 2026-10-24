@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { extractPages } from './extract';
 import { buildLines, isKeyPage, stripRunningText } from './layout';
 import { parseQuestions } from './questionParser';
+import { fingerprint } from './testing/fingerprint';
 import type { Line, TextItem } from './types';
 
 function item(str: string, x: number, y: number, page = 1): TextItem {
@@ -160,7 +161,7 @@ describe('parseQuestions on the real sample exam', () => {
     expect(questions).toHaveLength(100);
     expect(questions.map((q) => q.number)).toEqual(Array.from({ length: 100 }, (_, i) => i + 1));
     for (const q of questions) expect(q.options).toHaveLength(4);
-    expect(questions[0].prompt.startsWith('Janelle owns a fast-food restaurant')).toBe(true);
-    expect(questions[99].options[3]).toBe('Shortened hours');
+    expect(fingerprint(questions[0].prompt)).toBe('262f04324249c8f8');
+    expect(fingerprint(questions[99].options[3], 100)).toBe('f17c4be3388925fb');
   });
 });

@@ -151,6 +151,13 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
           bundled with the app: you import your own DECA exam PDF and it never leaves this computer. The only network use
           is checking for updates, and only when you ask or turn automatic checks on.
         </p>
+        <p className="mt-2 text-sm text-muted">
+          DECAPete is an independent study tool. It is not affiliated with, endorsed by or sponsored by DECA Inc. or the MBA
+          Research and Curriculum Center. DECA is a registered trademark of DECA Inc. Answers and explanations are read
+          automatically from your PDF and can contain mistakes, so check anything important against the original. Only
+          import exams you are allowed to use. Open-source licenses are in THIRD_PARTY_NOTICES.txt in the app&apos;s
+          resources folder.
+        </p>
       </div>
 
       <UpdateCard />
