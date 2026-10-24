@@ -7,6 +7,7 @@ import {
   setAutoBackupEnabled,
 } from '../../storage/backupService';
 import { ConfirmDialog } from '../library/ConfirmDialog';
+import { UpdateCard } from './UpdateCard';
 import { btnDanger, btnPrimary, btnSecondary, card } from '../library/ui';
 
 const BACKUP_FOLDER = 'Documents\\DECAPete Backups';
@@ -66,8 +67,7 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
     setDialog(null);
     setTyped('');
     await run(async () => {
-      const exams = await repo.listExams();
-      for (const exam of exams) await repo.deleteExam(exam.id);
+      await repo.clearAll();
       return { kind: 'success', text: 'All exams and progress were deleted.' };
     });
   };
@@ -147,13 +147,13 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
           <strong>DECAPete</strong> · version {version}
         </p>
         <p className="mt-2 text-sm text-muted">
-          Works fully offline. There are no accounts, no tracking and no telemetry, and no exam content is bundled with the
-          app: you import your own DECA exam PDF and it never leaves this computer.
+          Everything runs on this computer. There are no accounts, no tracking and no telemetry, and no exam content is
+          bundled with the app: you import your own DECA exam PDF and it never leaves this computer. The only network use
+          is checking for updates, and only when you ask or turn automatic checks on.
         </p>
-        <button type="button" className={`${btnSecondary} mt-4`} disabled>
-          Check for updates (coming later)
-        </button>
       </div>
+
+      <UpdateCard />
 
       <div className={`${card} border-wrong`}>
         <h2 className="mb-1 text-lg font-bold text-wrong">Reset all data</h2>

@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import type { UpdateState } from './updateTypes';
 
 export interface PickedFile {
   name: string;
@@ -23,6 +24,21 @@ const api = {
   /** Writes into Documents/DECAPete Backups without a dialog; resolves the full path. */
   writeAutoBackup: (fileName: string, text: string): Promise<string> =>
     ipcRenderer.invoke('file:auto-backup', fileName, text),
+  /** Asks the update server whether a newer version exists. The only network request the app can make. */
+  checkForUpdates: (): Promise<UpdateState> => ipcRenderer.invoke('update:check'),
+  /** Downloads the update found by checkForUpdates. Does nothing in any other state. */
+  downloadUpdate: (): Promise<UpdateState> => ipcRenderer.invoke('update:download'),
+  /** Restarts into the installer once the update has downloaded. Does nothing in any other state. */
+  installUpdate: (): Promise<void> => ipcRenderer.invoke('update:install'),
+  getUpdateState: (): Promise<UpdateState> => ipcRenderer.invoke('update:get-state'),
+  /** Subscribes to update progress; returns an unsubscribe function. The event object is never exposed. */
+  onUpdateState: (callback: (state: UpdateState) => void): (() => void) => {
+    const listener = (_event: unknown, state: UpdateState): void => callback(state);
+    ipcRenderer.on('update:state', listener);
+    return () => {
+      ipcRenderer.removeListener('update:state', listener);
+    };
+  },
 } as const;
 
 export type DecaApi = typeof api;

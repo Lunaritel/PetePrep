@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, join, normalize, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { registerUpdater } from './updater';
 
 const APP_SCHEME = 'app';
 const APP_HOST = 'renderer';
@@ -126,6 +127,7 @@ if (!app.requestSingleInstanceLock()) {
 app.whenReady().then(() => {
   registerAppProtocol();
   registerIpc();
+  registerUpdater();
   createWindow();
 
   app.on('activate', () => {

@@ -86,6 +86,12 @@ export function createDexieRepository(name = 'deca-mastery'): Repository {
       });
     },
 
+    async clearAll() {
+      await db.transaction('rw', db.exams, db.questions, db.sessions, db.answers, async () => {
+        await Promise.all([db.answers.clear(), db.sessions.clear(), db.questions.clear(), db.exams.clear()]);
+      });
+    },
+
     async resetProgress(examId) {
       await db.transaction('rw', db.sessions, db.answers, async () => {
         await db.answers.where('examId').equals(examId).delete();

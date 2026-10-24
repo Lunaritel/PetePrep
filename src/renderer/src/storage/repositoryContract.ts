@@ -308,6 +308,51 @@ export function runRepositoryContract(name: string, factory: () => Promise<Repos
       });
     });
 
+    describe('clearAll', () => {
+      it('removes every exam, question, session, answer and snapshot', async () => {
+        const a = await repo.saveExam({ title: 'A', fileHash: 'hash-a', fileName: 'a.pdf' }, [
+          makeQuestion(1, { snapshot: tinyPng() }),
+          makeQuestion(2),
+        ]);
+        const b = await seed('hash-b', 2, 'B');
+        for (const exam of [a, b]) {
+          const [q] = await repo.getQuestions(exam.id);
+          const session = await repo.createSession({ examId: exam.id, kind: 'practice', questionIds: [q.id] });
+          await repo.recordAnswer({ sessionId: session.id, examId: exam.id, questionId: q.id, chosenIndex: 0, correct: true });
+        }
+
+        await repo.clearAll();
+
+        expect(await repo.listExams()).toEqual([]);
+        for (const exam of [a, b]) {
+          expect(await repo.getExam(exam.id)).toBeUndefined();
+          expect(await repo.getQuestions(exam.id)).toEqual([]);
+          expect(await repo.listSessions(exam.id)).toEqual([]);
+          expect(await repo.listAnswers(exam.id)).toEqual([]);
+        }
+        const exported = await repo.exportAll();
+        expect(exported.exams).toEqual([]);
+        expect(exported.questions).toEqual([]);
+        expect(exported.sessions).toEqual([]);
+        expect(exported.answers).toEqual([]);
+      });
+
+      it('lets a previously imported file be imported again', async () => {
+        await seed('hash-again');
+        await expect(seed('hash-again')).rejects.toBeInstanceOf(DuplicateExamError);
+        await repo.clearAll();
+        expect(await repo.findExamByHash('hash-again')).toBeUndefined();
+        const again = await seed('hash-again');
+        expect(await repo.getExam(again.id)).toBeDefined();
+      });
+
+      it('is safe on an empty database and can be repeated', async () => {
+        await expect(repo.clearAll()).resolves.toBeUndefined();
+        await expect(repo.clearAll()).resolves.toBeUndefined();
+        expect(await repo.listExams()).toEqual([]);
+      });
+    });
+
     describe('backup', () => {
       async function populate() {
         const a = await repo.saveExam({ title: 'Alpha', testCode: '1206', fileHash: 'ha', fileName: 'a.pdf' }, [

@@ -1,4 +1,4 @@
-import type { Exam } from './domain';
+import type { Exam } from '../domain';
 
 export const sampleExam: Exam = {
   id: 'sample-marketing',

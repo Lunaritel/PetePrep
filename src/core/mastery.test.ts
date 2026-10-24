@@ -11,7 +11,7 @@ import {
   isMasteryComplete,
   recordAttempt,
 } from './mastery';
-import { sampleExam } from './sampleExam';
+import { sampleExam } from './testing/sampleExam';
 
 const AT = '2026-01-01T00:00:00.000Z';
 const DONE = '2026-01-01T00:05:00.000Z';

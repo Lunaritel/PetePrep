@@ -10,6 +10,7 @@ import { SettingsScreen } from '../screens/settings';
 import { StatsScreen } from '../screens/stats';
 import type { Repository } from '../storage/contract';
 import type { Route } from './types';
+import { useAutoUpdateCheck } from './useAutoUpdateCheck';
 
 interface BoundaryProps {
   children: ReactNode;
@@ -89,6 +90,8 @@ const NAV: { label: string; route: Route; matches: Route['name'][] }[] = [
 export function Shell({ repo }: { repo: Repository }) {
   const [route, setRoute] = useState<Route>({ name: 'library' });
   const [onboarded, setOnboarded] = useState<boolean>(() => hasSeenOnboarding());
+
+  useAutoUpdateCheck();
 
   const navigate = useCallback((next: Route) => setRoute(next), []);
 

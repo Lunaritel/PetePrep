@@ -4,7 +4,7 @@ An offline Windows app that turns a DECA exam PDF into a practice engine. Import
 PDF (questions plus answer key and explanations), practice it, and keep re-testing the
 questions you have not mastered until every one sticks.
 
-- Works fully offline. No accounts, no telemetry, no bundled exam content.
+- Works offline. No accounts, no telemetry, no bundled exam content. The only network use is the optional update check described below.
 - Explanations are shown word for word from the answer key.
 - A question counts as mastered after two correct answers in a row. A wrong answer sends it back to learning.
 - Questions with a picture or table are shown as a screenshot of the original page area.
@@ -17,6 +17,17 @@ questions you have not mastered until every one sticks.
 
 Your data stays on your computer. Use **Settings > Export backup** to keep a copy. The app also saves a
 backup to `Documents\DECAPete Backups` after each round (you can turn that off in Settings).
+
+## Updates
+
+The installed app can update itself, but only when you ask. It never touches the internet on its own:
+
+- **Settings > Updates > Check for updates** asks GitHub whether a newer release exists. That is the only network request the app ever makes, and it sends nothing about you or your exams.
+- Turning on **Check for updates automatically** makes it look once, shortly after the app starts. It still never downloads or installs anything by itself.
+- When a newer version is found you choose **Download**, then **Restart and install**.
+- The portable zip cannot update itself. Download the newest zip from the releases page instead.
+
+For maintainers: pushing a tag like `v0.2.0` runs the release workflow, which uploads the installer, the zip, the `.blockmap` and `latest.yml`. The updater reads `latest.yml`, so a release without it is invisible to the app. Bump `version` in `package.json` before tagging, because the app compares that number with the one in `latest.yml`.
 
 ## Develop
 

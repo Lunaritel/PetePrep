@@ -53,6 +53,12 @@ export function createMemoryRepository(): Repository {
       sessions = sessions.filter((s) => s.examId !== id);
       answers = answers.filter((a) => a.examId !== id);
     },
+    async clearAll() {
+      exams = [];
+      questions = [];
+      sessions = [];
+      answers = [];
+    },
     async resetProgress(examId) {
       sessions = sessions.filter((s) => s.examId !== examId);
       answers = answers.filter((a) => a.examId !== examId);

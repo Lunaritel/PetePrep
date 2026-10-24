@@ -86,6 +86,8 @@ export interface Repository {
   deleteExam(id: string): Promise<void>;
   /** Deletes all sessions and answers for the exam; the exam and questions stay. */
   resetProgress(examId: string): Promise<void>;
+  /** Removes every exam, question, session and answer in one all-or-nothing step. Safe on an empty database. */
+  clearAll(): Promise<void>;
 
   getQuestions(examId: string): Promise<QuestionRow[]>;
 

@@ -30,7 +30,7 @@ describe('SettingsScreen', () => {
     const repo = createMemoryRepository();
     render(<SettingsScreen repo={repo} navigate={vi.fn()} />);
     await userEvent.click(screen.getByRole('button', { name: /Export backup/ }));
-    expect(await screen.findByRole('status')).toHaveTextContent('Backup saved to C:\\Users\\me\\deca.json.');
+    expect(await screen.findByText('Backup saved to C:\\Users\\me\\deca.json.')).toBeInTheDocument();
     expect(backup.exportBackupToFile).toHaveBeenCalledWith(repo);
   });
 
@@ -103,18 +103,24 @@ describe('SettingsScreen', () => {
     expect(toggle).not.toBeChecked();
   });
 
-  it('shows about info, the privacy promise and a disabled update check', () => {
+  it('shows about info, the privacy promise and the update card', () => {
     render(<SettingsScreen repo={createMemoryRepository()} navigate={vi.fn()} />);
-    expect(screen.getByText(/version dev/)).toBeInTheDocument();
+    expect(screen.getAllByText(/version dev/).length).toBeGreaterThan(0);
     expect(screen.getByText(/no accounts, no tracking and no telemetry/i)).toBeInTheDocument();
     expect(screen.getByText(/no exam content is bundled/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Check for updates (coming later)' })).toBeDisabled();
+    expect(screen.getByText(/only network use is checking for updates/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /check for updates/i })).toBeInTheDocument();
   });
 
   it('reset-all needs the exact word DELETE, then removes every exam', async () => {
     const repo = createMemoryRepository();
-    await seedExam(repo, { title: 'One' });
+    const one = await seedExam(repo, { title: 'One' });
     await seedExam(repo, { title: 'Two' });
+    const [q] = await repo.getQuestions(one.id);
+    const session = await repo.createSession({ examId: one.id, kind: 'practice', questionIds: [q.id] });
+    await repo.recordAnswer({ sessionId: session.id, examId: one.id, questionId: q.id, chosenIndex: 0, correct: true });
+    const clearAll = vi.spyOn(repo, 'clearAll');
+    const deleteExam = vi.spyOn(repo, 'deleteExam');
     render(<SettingsScreen repo={repo} navigate={vi.fn()} />);
 
     await userEvent.click(screen.getByRole('button', { name: /Reset all data/ }));
@@ -132,6 +138,26 @@ describe('SettingsScreen', () => {
 
     expect(await screen.findByText('All exams and progress were deleted.')).toBeInTheDocument();
     expect(await repo.listExams()).toHaveLength(0);
+    expect(await repo.listAnswers(one.id)).toEqual([]);
+    // One atomic call, never a per-exam loop that could stop half way.
+    expect(clearAll).toHaveBeenCalledTimes(1);
+    expect(deleteExam).not.toHaveBeenCalled();
+  });
+
+  it('when the reset fails nothing is partially wiped and the error is shown', async () => {
+    const repo = createMemoryRepository();
+    await seedExam(repo, { title: 'One' });
+    await seedExam(repo, { title: 'Two' });
+    vi.spyOn(repo, 'clearAll').mockRejectedValue(new Error('The database is locked.'));
+    render(<SettingsScreen repo={repo} navigate={vi.fn()} />);
+
+    await userEvent.click(screen.getByRole('button', { name: /Reset all data/ }));
+    await userEvent.type(screen.getByLabelText(/Type DELETE/), 'DELETE');
+    await userEvent.click(screen.getByRole('button', { name: 'Delete everything' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('The database is locked.');
+    expect(screen.queryByText('All exams and progress were deleted.')).not.toBeInTheDocument();
+    expect(await repo.listExams()).toHaveLength(2);
   });
 
   it('cancelling reset-all keeps everything and clears the typed text', async () => {

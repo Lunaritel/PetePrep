@@ -17,6 +17,7 @@
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
     "dexie": "^4.4.7",
+    "electron-updater": "^6.8.11",
     "pdfjs-dist": "^6.4.299",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -75,7 +76,15 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "artifactName": "${productName}-Setup-${version}.${ext}"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Lunaritel",
+        "repo": "DECAPete",
+        "releaseType": "release"
+      }
+    ]
   },
   "author": "DECAPete"
 }
