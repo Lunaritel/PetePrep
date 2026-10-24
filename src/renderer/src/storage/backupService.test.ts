@@ -14,7 +14,7 @@ type Bridge = NonNullable<Window['deca']>;
 
 function installBridge(overrides: Partial<Bridge> = {}) {
   const bridge = {
-    appName: 'DECA Mastery',
+    appName: 'DECAPete',
     version: 'test',
     openPdf: vi.fn(),
     saveTextFile: vi.fn(async () => 'C:/saved.json'),
@@ -121,7 +121,7 @@ describe('exportBackupToFile', () => {
     const path = await exportBackupToFile(repo);
     expect(path).toBe('C:/saved.json');
     const [name, text] = (bridge.saveTextFile as ReturnType<typeof vi.fn>).mock.calls[0] as [string, string];
-    expect(name).toMatch(/^deca-mastery-backup-\d{4}-\d{2}-\d{2}\.json$/);
+    expect(name).toMatch(/^decapete-backup-\d{4}-\d{2}-\d{2}\.json$/);
     expect(JSON.parse(text).exams).toHaveLength(1);
   });
 

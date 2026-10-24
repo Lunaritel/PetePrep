@@ -1,5 +1,5 @@
 {
-  "name": "deca-mastery",
+  "name": "decapete",
   "version": "0.1.0",
   "description": "DECA exam practice app with mastery-based retesting",
   "main": "out/main/index.js",
@@ -43,8 +43,8 @@
     "vitest": "^2.1.8"
   },
   "build": {
-    "appId": "com.deca.mastery",
-    "productName": "DECA Mastery",
+    "appId": "com.decapete.app",
+    "productName": "DECAPete",
     "directories": {
       "output": "release",
       "buildResources": "build"
@@ -77,5 +77,5 @@
       "artifactName": "${productName}-Setup-${version}.${ext}"
     }
   },
-  "author": "DECA Mastery"
+  "author": "DECAPete"
 }

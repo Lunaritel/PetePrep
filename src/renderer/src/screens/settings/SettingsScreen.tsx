@@ -9,7 +9,7 @@ import {
 import { ConfirmDialog } from '../library/ConfirmDialog';
 import { btnDanger, btnPrimary, btnSecondary, card } from '../library/ui';
 
-const BACKUP_FOLDER = 'Documents\\DECA Mastery Backups';
+const BACKUP_FOLDER = 'Documents\\DECAPete Backups';
 const WIPE_WORD = 'DELETE';
 
 type Notice = { kind: 'success' | 'info' | 'error'; text: string } | null;
@@ -144,7 +144,7 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
       <div className={card}>
         <h2 className="mb-2 text-lg font-bold text-ink">About</h2>
         <p className="text-sm text-ink">
-          <strong>DECA Mastery</strong> · version {version}
+          <strong>DECAPete</strong> · version {version}
         </p>
         <p className="mt-2 text-sm text-muted">
           Works fully offline. There are no accounts, no tracking and no telemetry, and no exam content is bundled with the

@@ -28,6 +28,12 @@ function registerAppProtocol(): void {
   });
 }
 
+// The profile folder predates the rename; pin it so existing exams and progress stay with the app.
+// An explicit --user-data-dir (used by tests) still wins.
+if (!app.commandLine.hasSwitch('user-data-dir')) {
+  app.setPath('userData', join(app.getPath('appData'), 'DECA Mastery'));
+}
+
 const devIcon = join(__dirname, '../../build/icon.png');
 const MAX_PDF_BYTES = 100 * 1024 * 1024;
 const MAX_TEXT_BYTES = 200 * 1024 * 1024;
@@ -67,7 +73,7 @@ function registerIpc(): void {
     if (typeof fileName !== 'string' || typeof text !== 'string') throw new Error('Invalid backup request.');
     const safe = basename(fileName).replace(/[^\w.-]+/g, '_');
     if (!safe.endsWith('.json')) throw new Error('Backups must be .json files.');
-    const dir = join(app.getPath('documents'), 'DECA Mastery Backups');
+    const dir = join(app.getPath('documents'), 'DECAPete Backups');
     await mkdir(dir, { recursive: true });
     const path = join(dir, safe);
     await writeFile(path, text, 'utf8');

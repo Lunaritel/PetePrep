@@ -89,8 +89,8 @@ function list(value: unknown, name: string): unknown[] {
  * plain-language reason on any problem, so a bad file can never half-restore.
  */
 export async function parseBackup(input: unknown): Promise<DatabaseSnapshot> {
-  if (!isRecord(input)) fail('This file is not a DECA Mastery backup.');
-  if (input.format !== 'deca-mastery-backup') fail('This file is not a DECA Mastery backup.');
+  if (!isRecord(input)) fail('This file is not a DECAPete backup.');
+  if (input.format !== 'deca-mastery-backup') fail('This file is not a DECAPete backup.');
   if (input.version !== 1) fail(`Unsupported backup version ${String(input.version)}.`);
 
   const exams: ExamRow[] = list(input.exams, 'exams').map((raw, i) => {

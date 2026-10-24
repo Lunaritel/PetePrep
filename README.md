@@ -1,4 +1,4 @@
-# DECA Mastery
+# DECAPete
 
 An offline Windows app that turns a DECA exam PDF into a practice engine. Import the exam
 PDF (questions plus answer key and explanations), practice it, and keep re-testing the
@@ -11,12 +11,12 @@ questions you have not mastered until every one sticks.
 
 ## Install (students)
 
-1. Download `DECA Mastery-Setup-<version>.exe` (installer) or the `.zip` (portable) from the latest GitHub Release.
+1. Download `DECAPete-Setup-<version>.exe` (installer) or the `.zip` (portable) from the latest GitHub Release.
 2. Windows SmartScreen may say the app is unrecognised because it is not code signed. Choose **More info**, then **Run anyway**.
 3. Open the app, choose **Import exam**, and pick your DECA exam PDF.
 
 Your data stays on your computer. Use **Settings > Export backup** to keep a copy. The app also saves a
-backup to `Documents\DECA Mastery Backups` after each round (you can turn that off in Settings).
+backup to `Documents\DECAPete Backups` after each round (you can turn that off in Settings).
 
 ## Develop
 

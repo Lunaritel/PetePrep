@@ -404,10 +404,10 @@ export function runRepositoryContract(name: string, factory: () => Promise<Repos
         });
 
         it('not an object / wrong format / wrong version', async () => {
-          await expectBackupRejected(repo, null, /not a DECA Mastery backup/);
-          await expectBackupRejected(repo, 'hello', /not a DECA Mastery backup/);
-          await expectBackupRejected(repo, [], /not a DECA Mastery backup/);
-          await expectBackupRejected(repo, { ...clone(), format: 'something-else' }, /not a DECA Mastery backup/);
+          await expectBackupRejected(repo, null, /not a DECAPete backup/);
+          await expectBackupRejected(repo, 'hello', /not a DECAPete backup/);
+          await expectBackupRejected(repo, [], /not a DECAPete backup/);
+          await expectBackupRejected(repo, { ...clone(), format: 'something-else' }, /not a DECAPete backup/);
           await expectBackupRejected(repo, { ...clone(), version: 2 }, /version/i);
         });
 
