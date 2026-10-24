@@ -240,7 +240,7 @@ export function StudyRunner({ repo, session, questions, heading, onExit, onFinis
         )}
 
         <div className="mt-5 flex items-center justify-between gap-3">
-          <span className="text-sm text-muted">{feedback ? 'Press Enter for the next question' : 'Press A–D or 1–4 to answer'}</span>
+          <span className="text-sm text-muted">{feedback ? 'Press Enter for the next question' : 'Press A to D or 1 to 4 to answer'}</span>
           {feedback && (
             <PrimaryButton ref={nextRef} onClick={next}>
               {last ? 'Finish' : 'Next question'}

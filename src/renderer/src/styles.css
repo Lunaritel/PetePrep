@@ -103,18 +103,21 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+/* In the base layer so utilities such as outline-none can still opt a programmatic focus target out. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
 
-::selection {
-  background: var(--accent-soft);
-  color: var(--ink);
-}
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--ink);
+  }
 
-button:not(:disabled):active {
-  transform: translateY(1px);
+  button:not(:disabled):active {
+    transform: translateY(1px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

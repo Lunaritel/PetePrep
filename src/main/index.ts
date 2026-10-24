@@ -106,6 +106,19 @@ function createWindow(): void {
   }
 }
 
+// One window only: two instances would fight over the same IndexedDB and backup files.
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    const [existing] = BrowserWindow.getAllWindows();
+    if (existing) {
+      if (existing.isMinimized()) existing.restore();
+      existing.focus();
+    }
+  });
+}
+
 app.whenReady().then(() => {
   registerAppProtocol();
   registerIpc();
