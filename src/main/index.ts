@@ -1,4 +1,5 @@
 import { app, BrowserWindow, dialog, ipcMain, nativeTheme, net, protocol, shell } from 'electron';
+import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, join, normalize, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -27,6 +28,7 @@ function registerAppProtocol(): void {
   });
 }
 
+const devIcon = join(__dirname, '../../build/icon.png');
 const MAX_PDF_BYTES = 100 * 1024 * 1024;
 const MAX_TEXT_BYTES = 200 * 1024 * 1024;
 
@@ -80,6 +82,8 @@ function createWindow(): void {
     minWidth: 760,
     minHeight: 600,
     show: false,
+    // Packaged builds carry the icon in the .exe; this file only exists when running from source.
+    ...(existsSync(devIcon) ? { icon: devIcon } : {}),
     autoHideMenuBar: true,
     backgroundColor: nativeTheme.shouldUseDarkColors ? '#131528' : '#eef0f8',
     webPreferences: {
