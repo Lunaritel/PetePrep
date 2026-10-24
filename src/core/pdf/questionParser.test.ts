@@ -35,6 +35,20 @@ function question(n: number, y: number, page = 1): Line[] {
 }
 
 describe('parseQuestions', () => {
+  it('accepts markers merged into the same text item as the text (other PDF generators)', () => {
+    const merged = (text: string, y: number): Line => ({ page: 1, y, x: 49, text, items: [item(text, 49, y)] });
+    const { questions, issues } = parseQuestions([
+      merged('1. Which is right?', 700),
+      merged('A. one', 680),
+      merged('B. two', 666),
+      merged('C. three', 652),
+      merged('D. four', 638),
+    ]);
+    expect(issues).toEqual([]);
+    expect(questions[0].prompt).toBe('Which is right?');
+    expect(questions[0].options).toEqual(['one', 'two', 'three', 'four']);
+  });
+
   it('parses a simple question and ignores cover-page lines before the first marker', () => {
     const lines = [line(null, 'SAMPLE EXAM', 500), ...question(1, 700)];
     const { questions, issues } = parseQuestions(lines);

@@ -11,8 +11,9 @@ export interface RawQuestion {
   extents: SnapshotSegment[];
 }
 
-const QUESTION_MARKER = /^(\d{1,3})\.$/;
-const OPTION_MARKER = /^([A-D])\.$/;
+// A marker may be its own text item (DECA files) or merged with the text that follows it (other generators).
+const QUESTION_MARKER = /^(\d{1,3})\.(?=\s|$)/;
+const OPTION_MARKER = /^([A-D])\.(?=\s|$)/;
 const OPTION_LETTERS = 'ABCD';
 const COLUMN_TOLERANCE = 3;
 const LINE_ASCENT = 9;
@@ -70,9 +71,7 @@ export function parseQuestions(lines: Line[]): { questions: RawQuestion[]; issue
   let lastMarkerX = 0;
 
   for (const line of lines) {
-    const first = line.items[0]?.str ?? '';
-
-    const q = QUESTION_MARKER.exec(first);
+    const q = QUESTION_MARKER.exec(line.text);
     if (q) {
       const n = Number(q[1]);
       const sequential = n === lastNumber + 1;
@@ -90,7 +89,7 @@ export function parseQuestions(lines: Line[]): { questions: RawQuestion[]; issue
         draft = {
           number: n,
           sourcePage: line.page,
-          promptParts: [afterMarker(line, first)],
+          promptParts: [afterMarker(line, q[0])],
           optionParts: [],
           rawLines: [line.text],
           extents: new Map(),
@@ -106,9 +105,9 @@ export function parseQuestions(lines: Line[]): { questions: RawQuestion[]; issue
     draft.rawLines.push(line.text);
     track(draft, line);
 
-    const o = OPTION_MARKER.exec(first);
+    const o = OPTION_MARKER.exec(line.text);
     if (o && o[1] === OPTION_LETTERS[draft.optionParts.length]) {
-      draft.optionParts.push([afterMarker(line, first)]);
+      draft.optionParts.push([afterMarker(line, o[0])]);
       continue;
     }
 

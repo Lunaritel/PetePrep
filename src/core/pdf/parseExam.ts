@@ -1,5 +1,5 @@
 import { parseAnswerKey } from './answerKey';
-import { attachVisuals } from './attachVisuals';
+import { attachVisuals, dropFigureText } from './attachVisuals';
 import { extractPages } from './extract';
 import { buildLines, isKeyPage, stripRunningText } from './layout';
 import { parseQuestions } from './questionParser';
@@ -35,7 +35,7 @@ export function parseExamFromPages(pages: PageItems[]): ParsedExam {
     issues.push({ severity: 'error', message: 'No answer-key pages were found (expected pages headed "KEY").' });
   }
 
-  const parsedQ = parseQuestions(questionLines);
+  const parsedQ = parseQuestions(dropFigureText(questionLines, pages));
   const parsedK = parseAnswerKey(keyLines);
   const merged = validateAndMerge(parsedQ.questions, parsedK.entries, pages.length);
   const visuals = attachVisuals(parsedQ.questions, pages);

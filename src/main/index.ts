@@ -1,5 +1,6 @@
-import { app, BrowserWindow, net, protocol, shell } from 'electron';
-import { join, normalize, sep } from 'node:path';
+import { app, BrowserWindow, dialog, ipcMain, nativeTheme, net, protocol, shell } from 'electron';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { basename, join, normalize, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const APP_SCHEME = 'app';
@@ -26,6 +27,52 @@ function registerAppProtocol(): void {
   });
 }
 
+const MAX_PDF_BYTES = 100 * 1024 * 1024;
+const MAX_TEXT_BYTES = 200 * 1024 * 1024;
+
+function registerIpc(): void {
+  ipcMain.handle('file:open-pdf', async (event) => {
+    const owner = BrowserWindow.fromWebContents(event.sender);
+    const options = { title: 'Choose a DECA exam PDF', properties: ['openFile' as const], filters: [{ name: 'PDF', extensions: ['pdf'] }] };
+    const picked = owner ? await dialog.showOpenDialog(owner, options) : await dialog.showOpenDialog(options);
+    if (picked.canceled || picked.filePaths.length === 0) return null;
+    const data = await readFile(picked.filePaths[0]);
+    if (data.byteLength > MAX_PDF_BYTES) throw new Error('That PDF is too large to import.');
+    return { name: basename(picked.filePaths[0]), data: new Uint8Array(data) };
+  });
+
+  ipcMain.handle('file:save-text', async (event, suggestedName: unknown, text: unknown) => {
+    if (typeof suggestedName !== 'string' || typeof text !== 'string') throw new Error('Invalid save request.');
+    const owner = BrowserWindow.fromWebContents(event.sender);
+    const options = { defaultPath: basename(suggestedName), filters: [{ name: 'JSON', extensions: ['json'] }] };
+    const picked = owner ? await dialog.showSaveDialog(owner, options) : await dialog.showSaveDialog(options);
+    if (picked.canceled || !picked.filePath) return null;
+    await writeFile(picked.filePath, text, 'utf8');
+    return picked.filePath;
+  });
+
+  ipcMain.handle('file:open-text', async (event) => {
+    const owner = BrowserWindow.fromWebContents(event.sender);
+    const options = { title: 'Choose a backup file', properties: ['openFile' as const], filters: [{ name: 'JSON', extensions: ['json'] }] };
+    const picked = owner ? await dialog.showOpenDialog(owner, options) : await dialog.showOpenDialog(options);
+    if (picked.canceled || picked.filePaths.length === 0) return null;
+    const data = await readFile(picked.filePaths[0]);
+    if (data.byteLength > MAX_TEXT_BYTES) throw new Error('That file is too large to restore.');
+    return { name: basename(picked.filePaths[0]), text: data.toString('utf8') };
+  });
+
+  ipcMain.handle('file:auto-backup', async (_event, fileName: unknown, text: unknown) => {
+    if (typeof fileName !== 'string' || typeof text !== 'string') throw new Error('Invalid backup request.');
+    const safe = basename(fileName).replace(/[^\w.-]+/g, '_');
+    if (!safe.endsWith('.json')) throw new Error('Backups must be .json files.');
+    const dir = join(app.getPath('documents'), 'DECA Mastery Backups');
+    await mkdir(dir, { recursive: true });
+    const path = join(dir, safe);
+    await writeFile(path, text, 'utf8');
+    return path;
+  });
+}
+
 function createWindow(): void {
   const window = new BrowserWindow({
     width: 1100,
@@ -34,7 +81,7 @@ function createWindow(): void {
     minHeight: 600,
     show: false,
     autoHideMenuBar: true,
-    backgroundColor: '#f4f6f9',
+    backgroundColor: nativeTheme.shouldUseDarkColors ? '#131528' : '#eef0f8',
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       contextIsolation: true,
@@ -61,6 +108,7 @@ function createWindow(): void {
 
 app.whenReady().then(() => {
   registerAppProtocol();
+  registerIpc();
   createWindow();
 
   app.on('activate', () => {

@@ -38,7 +38,10 @@ function solidPng(size: number): Buffer {
 }
 
 function options(doc: PDFKit.PDFDocument, top: number): void {
-  ['A. alpha', 'B. beta', 'C. gamma', 'D. delta'].forEach((t, i) => doc.text(t, 75, top + i * 14));
+  ['alpha', 'beta', 'gamma', 'delta'].forEach((t, i) => {
+    // Marker and text are separate runs, as in the real DECA PDFs.
+    doc.text(`${'ABCD'[i]}.`, 61, top + i * 14).text(t, 75, top + i * 14);
+  });
 }
 
 /**

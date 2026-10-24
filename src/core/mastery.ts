@@ -79,7 +79,7 @@ export function buildMasterExam(state: MasteryState, exam: Exam): Exam | null {
   const masterAttempts = state.attempts.filter((attempt) => attempt.kind === 'master').length;
   return {
     id: `${exam.id}-master-${masterAttempts + 1}`,
-    title: `${exam.title} — Master Exam`,
+    title: `${exam.title} - Master Exam`,
     sourceFile: exam.sourceFile,
     questions: remaining,
   };

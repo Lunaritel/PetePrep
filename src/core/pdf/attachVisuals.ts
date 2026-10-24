@@ -1,5 +1,5 @@
 import type { RawQuestion } from './questionParser';
-import type { PageItems, SnapshotSegment, VisualKind, VisualRegion } from './types';
+import type { Line, PageItems, SnapshotSegment, VisualKind, VisualRegion } from './types';
 
 const PAD = 4;
 const EDGE_FRACTION = 0.05;
@@ -77,4 +77,21 @@ export function attachVisuals(questions: RawQuestion[], pages: PageItems[]): Map
     });
   }
   return out;
+}
+
+const MARKER = /^(?:\d{1,3}|[A-D])\.$/;
+
+/**
+ * Removes text that sits inside a detected figure (table cells, chart labels) so it does not leak into
+ * the typed question text. The screenshot still shows it. Question and option markers are always kept.
+ */
+export function dropFigureText(lines: Line[], pages: PageItems[]): Line[] {
+  const byPage = new Map(pages.map((p) => [p.page, p.visuals ?? []]));
+  return lines.filter((line) => {
+    if (MARKER.test(line.items[0]?.str ?? '')) return true;
+    const regions = byPage.get(line.page) ?? [];
+    return !regions.some(
+      (r) => r.kind === 'graphic' && line.y >= r.y0 - 2 && line.y <= r.y1 + 2 && line.items.every((i) => i.x >= r.x0 - 2 && i.x + i.width <= r.x1 + 2),
+    );
+  });
 }

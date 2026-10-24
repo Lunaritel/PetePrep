@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { attachVisuals } from './attachVisuals';
+import { attachVisuals, dropFigureText } from './attachVisuals';
 import { extractPages } from './extract';
 import { buildLines, isKeyPage, stripRunningText } from './layout';
 import { parseExamPdf } from './parseExam';
@@ -63,6 +63,19 @@ describe('attachVisuals', () => {
     const band = out.get(1)!.segments[0];
     expect(band.top).toBeGreaterThanOrEqual(700);
     expect(band.bottom).toBeLessThanOrEqual(608);
+  });
+});
+
+describe('dropFigureText', () => {
+  it('keeps table cell text out of the typed question but leaves the stem and options', async () => {
+    const pages = await extractPages(await makeVisualPdf());
+    const lines = stripRunningText(pages, pages.map(buildLines)).flat();
+    const { questions: before } = parseQuestions(lines);
+    expect(before[1].rawText).toContain('Cell');
+    const { questions } = parseQuestions(dropFigureText(lines, pages));
+    expect(questions[1].prompt).toBe('Use the table to answer the question.');
+    expect(questions[1].options).toEqual(['alpha', 'beta', 'gamma', 'delta']);
+    expect(questions[0].prompt).toBe('Which item is shown in the picture below?');
   });
 });
 
