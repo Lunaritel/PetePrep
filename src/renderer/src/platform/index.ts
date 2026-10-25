@@ -17,6 +17,16 @@ export const platform = {
   get canPickNatively(): boolean { return !isWebBuild() && Boolean(bridge()); },
   get isDesktop(): boolean { return !isWebBuild(); },
   get appVersion(): string { return bridge()?.version ?? (typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'dev'); },
+  async requestPersistentStorage(): Promise<boolean> {
+    if (!isWebBuild() || typeof navigator === 'undefined' || !navigator.storage?.persist) return false;
+    try {
+      if (await navigator.storage.persisted()) return true;
+      return await navigator.storage.persist();
+    } catch {
+      // Storage persistence is best-effort; importing an exam must still work.
+      return false;
+    }
+  },
   async downloadFile(name: string, text: string): Promise<string | null> {
     const deca = bridge();
     if (deca) return deca.saveTextFile(name, text);

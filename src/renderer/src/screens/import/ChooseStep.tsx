@@ -41,6 +41,7 @@ export function ChooseStep({ error, canUseNativePicker, onNativePick, onFile }: 
       return;
     }
     setLocalError(null);
+    void platform.requestPersistentStorage();
     onFile({ name: file.name, data: await readBytes(file) });
   }
 
