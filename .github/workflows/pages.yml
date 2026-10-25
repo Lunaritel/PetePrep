@@ -1,6 +1,8 @@
 name: Publish PWA to GitHub Pages
 
 on:
+  pull_request:
+    branches: [main]
   push:
     tags: ['v*']
   workflow_dispatch:
