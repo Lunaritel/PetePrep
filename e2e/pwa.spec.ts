@@ -1,4 +1,4 @@
-﻿import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import PDFDocument from 'pdfkit';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -129,4 +129,3 @@ test('mobile PWA installs, imports, studies, backs up, restores and works offlin
   await context.setOffline(false);
   expect(consoleErrors, testInfo.project.name + ' browser console errors').toEqual([]);
 });
-
