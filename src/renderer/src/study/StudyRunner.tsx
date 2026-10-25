@@ -170,9 +170,9 @@ export function StudyRunner({ repo, session, questions, heading, examTitles, onE
 
   return (
     <Page>
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-accent-strong">{heading}</span>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <span className="text-sm text-muted">
             Question {index + 1} of {order.length}
           </span>

@@ -16,5 +16,9 @@ export default defineConfig({
   },
   renderer: {
     plugins: [react(), tailwindcss()],
+    define: {
+      __APP_VERSION__: JSON.stringify(version),
+      __WEB_BUILD__: JSON.stringify(false),
+    },
   },
 });

@@ -39,7 +39,7 @@ async function scriptedHistory(repo: Repository): Promise<{ exam: ExamRow; sessi
 }
 
 function rowCells(stem: RegExp): string[] {
-  const row = screen.getByText(stem).closest('tr');
+  const row = within(screen.getByRole('table')).getByText(stem).closest('tr');
   if (!row) throw new Error('row not found');
   return within(row).getAllByRole('cell').map((c) => c.textContent ?? '');
 }
@@ -175,10 +175,10 @@ describe('StatsScreen', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Learning' }));
     expect(screen.getAllByRole('row')).toHaveLength(2);
-    expect(screen.getByText(/Stem for question 3 /)).toBeInTheDocument();
+    expect(within(screen.getByRole('table')).getByText(/Stem for question 3 /)).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Unseen' }));
-    expect(screen.getByText(/Stem for question 4 /)).toBeInTheDocument();
-    expect(screen.queryByText(/Stem for question 3 /)).not.toBeInTheDocument();
+    expect(within(screen.getByRole('table')).getByText(/Stem for question 4 /)).toBeInTheDocument();
+    expect(within(screen.getByRole('table')).queryByText(/Stem for question 3 /)).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'All' }));
     expect(screen.getAllByRole('row')).toHaveLength(5);
   });

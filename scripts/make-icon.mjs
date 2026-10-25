@@ -7,15 +7,19 @@ const CLOUD = '#eef0f8';
 const PERIWINKLE = '#5560d4';
 const SIZES = [16, 24, 32, 48, 64, 128, 256];
 
-function draw(size) {
+function draw(size, maskable = false) {
   const canvas = createCanvas(size, size);
   const ctx = canvas.getContext('2d');
   const radius = size * 0.22;
 
   ctx.fillStyle = CLOUD;
-  ctx.beginPath();
-  ctx.roundRect(0, 0, size, size, radius);
-  ctx.fill();
+  if (maskable) {
+    ctx.fillRect(0, 0, size, size);
+  } else {
+    ctx.beginPath();
+    ctx.roundRect(0, 0, size, size, radius);
+    ctx.fill();
+  }
 
   // Saint Andrew's cross: two diagonals with round caps, optically centred.
   const inset = size * 0.28;
@@ -55,4 +59,9 @@ function buildIco(images) {
 mkdirSync('build', { recursive: true });
 writeFileSync('build/icon.png', draw(512));
 writeFileSync('build/icon.ico', buildIco(SIZES.map((size) => ({ size, data: draw(size) }))));
-console.log('wrote build/icon.png and build/icon.ico');
+const pwaIcons = 'src/renderer/public/icons';
+mkdirSync(pwaIcons, { recursive: true });
+writeFileSync(`${pwaIcons}/pwa-192.png`, draw(192));
+writeFileSync(`${pwaIcons}/pwa-512.png`, draw(512));
+writeFileSync(`${pwaIcons}/pwa-maskable-512.png`, draw(512, true));
+console.log('wrote desktop and PWA icons');

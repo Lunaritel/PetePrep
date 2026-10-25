@@ -10,3 +10,9 @@ coverage/
 
 # Exam PDFs are licensed third-party content and must never be committed
 *.pdf
+
+dist-web/
+playwright-report/
+test-results/
+src/renderer/public/LICENSE
+src/renderer/public/THIRD_PARTY_NOTICES.txt

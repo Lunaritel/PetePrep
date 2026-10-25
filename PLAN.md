@@ -309,6 +309,10 @@ Each phase ends green: `npm test` and `npm run typecheck` pass, and the app runs
 - No code signing.
 - No exam authoring tool — the app consumes DECA PDFs, it does not create content.
 
+## PWA v0.2.0 spike notes (2026-10-25)
+
+The separate `web/pwa` worktree adds a Vite build using `/PetePrep/` as the GitHub Pages base path. The first production web build succeeded and included the pdf.js worker and parser. Vite warns that the PDF worker and parser chunks exceed 500 kB, so phone import performance needs device measurement. Source inspection found that the four-button header, library action groups, import review flow, stats table, backup controls and update controls needed narrow-screen or browser-specific handling. Browser-based checks are tracked in `e2e/pwa.spec.ts`; real iPhone/Android devices still need owner testing. See `docs/PWA-SPIKE.md` for the detailed findings.
+
 ## 13. Open questions
 
 - A real DECA PDF is needed to finish P8. Everything before that runs on synthetic

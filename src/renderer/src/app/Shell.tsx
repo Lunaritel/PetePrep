@@ -108,8 +108,8 @@ export function Shell({ repo }: { repo: Repository }) {
 
   if (!onboarded) {
     return (
-      <div className="min-h-screen bg-bg text-ink">
-        <main className="mx-auto max-w-3xl px-5 py-10">
+      <div className="min-h-[100dvh] bg-bg text-ink">
+        <main className="mx-auto max-w-3xl px-0 py-0">
           <Onboarding
             onDone={() => {
               markOnboardingSeen();
@@ -125,9 +125,9 @@ export function Shell({ repo }: { repo: Repository }) {
     route.name === 'practice' || route.name === 'master' || route.name === 'weak' || (route.name === 'bank' && !!route.sessionId);
 
   return (
-    <div className="min-h-screen bg-bg text-ink">
+    <div className="min-h-[100dvh] bg-bg text-ink">
       <header className="border-b border-line bg-surface">
-        <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-5 py-3">
+        <div className="mx-auto flex max-w-4xl flex-col gap-2 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5 sm:py-3">
           <button
             type="button"
             className="min-h-11 text-lg font-bold tracking-tight text-ink"
@@ -136,7 +136,7 @@ export function Shell({ repo }: { repo: Repository }) {
             PetePrep
           </button>
           {!studying && (
-            <nav aria-label="Main" className="flex gap-1">
+            <nav aria-label="Main" className="grid w-full grid-cols-2 gap-1 sm:flex sm:w-auto">
               {NAV.map((item) => {
                 const active = item.matches.includes(route.name);
                 return (
@@ -144,7 +144,7 @@ export function Shell({ repo }: { repo: Repository }) {
                     key={item.label}
                     type="button"
                     aria-current={active ? 'page' : undefined}
-                    className={`min-h-11 rounded-lg px-3 text-sm font-semibold ${
+                    className={`min-h-11 rounded-lg px-2 text-sm font-semibold sm:px-3 ${
                       active ? 'bg-accent text-on-accent' : 'text-muted hover:bg-bg hover:text-ink'
                     }`}
                     onClick={() => navigate(item.route)}
@@ -157,7 +157,7 @@ export function Shell({ repo }: { repo: Repository }) {
           )}
         </div>
       </header>
-      <main className="mx-auto max-w-4xl px-5 py-8">
+      <main className="min-w-0">
         <ScreenBoundary key={routeKey(route)} onReset={() => navigate({ name: 'library' })}>
           {renderRoute(route, repo, navigate)}
         </ScreenBoundary>

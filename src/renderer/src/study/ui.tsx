@@ -28,11 +28,11 @@ export const SecondaryButton = forwardRef<HTMLButtonElement, ButtonHTMLAttribute
 });
 
 export function Page({ children }: { children: ReactNode }) {
-  return <div className="mx-auto w-full max-w-3xl px-5 py-6 text-ink">{children}</div>;
+  return <div className="mx-auto w-full max-w-3xl px-4 py-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-ink sm:px-5 sm:py-6">{children}</div>;
 }
 
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <section className={`rounded-2xl border border-line bg-surface p-6 shadow-sm ${className}`}>{children}</section>;
+  return <section className={`rounded-2xl border border-line bg-surface p-4 shadow-sm sm:p-6 ${className}`}>{children}</section>;
 }
 
 export function MasteryBar({ progress }: { progress: Progress }) {
