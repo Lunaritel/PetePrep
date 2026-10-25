@@ -39,6 +39,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
   window.deca = undefined;
 });
 
@@ -131,9 +132,13 @@ describe('exportBackupToFile', () => {
     expect(await exportBackupToFile(repo)).toBeNull();
   });
 
-  it('explains itself when run outside the desktop app', async () => {
+  it('downloads a backup in the browser when no native bridge exists', async () => {
+    vi.stubGlobal('URL', { createObjectURL: vi.fn(() => 'blob:test'), revokeObjectURL: vi.fn() });
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
     const { repo } = await seededRepo();
-    await expect(exportBackupToFile(repo)).rejects.toThrow(/desktop app/);
+    const name = await exportBackupToFile(repo);
+    expect(name).toMatch(/^peteprep-backup-\d{4}-\d{2}-\d{2}\.json$/);
+    expect(click).toHaveBeenCalledOnce();
   });
 });
 
@@ -179,8 +184,11 @@ describe('restoreBackupFromFile', () => {
     expect((await repo.listExams()).map((e) => e.id)).toEqual([exam.id]);
   });
 
-  it('explains itself when run outside the desktop app', async () => {
+  it('resolves false when the browser file picker is cancelled', async () => {
+    vi.spyOn(HTMLInputElement.prototype, 'click').mockImplementation(function (this: HTMLInputElement) {
+      this.dispatchEvent(new Event('cancel'));
+    });
     const { repo } = await seededRepo();
-    await expect(restoreBackupFromFile(repo)).rejects.toThrow(/desktop app/);
+    await expect(restoreBackupFromFile(repo)).resolves.toBe(false);
   });
 });

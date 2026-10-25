@@ -1,3 +1,4 @@
+import { platform } from '../platform';
 import { BackupFormatError } from './contract';
 import type { Repository } from './contract';
 
@@ -49,19 +50,15 @@ export async function maybeAutoBackup(repo: Repository): Promise<string | null> 
   }
 }
 
-/** Native save dialog -> backup JSON. Resolves the saved path, or null if cancelled. */
+/** Exports a backup through a native save dialog or a browser download. */
 export async function exportBackupToFile(repo: Repository): Promise<string | null> {
-  const deca = bridge();
-  if (!deca) throw new Error('Saving a backup is only available in the desktop app.');
   const backup = await repo.exportAll();
-  return deca.saveTextFile(`peteprep-backup-${dateStamp(new Date())}.json`, JSON.stringify(backup));
+  return platform.downloadFile(`peteprep-backup-${dateStamp(new Date())}.json`, JSON.stringify(backup));
 }
 
-/** Native open dialog -> validate -> replace database. Resolves true if restored, false if cancelled. Throws BackupFormatError on a bad file. */
+/** Restores a backup from a native dialog or a browser file picker. */
 export async function restoreBackupFromFile(repo: Repository): Promise<boolean> {
-  const deca = bridge();
-  if (!deca) throw new Error('Restoring a backup is only available in the desktop app.');
-  const picked = await deca.openTextFile();
+  const picked = await platform.pickTextFile();
   if (!picked) return false;
   let parsed: unknown;
   try {

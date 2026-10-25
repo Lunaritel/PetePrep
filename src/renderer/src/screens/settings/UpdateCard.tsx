@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { UpdateState } from '../../../../preload/updateTypes';
 import { isAutoUpdateEnabled, setAutoUpdateEnabled } from '../../app/updatePrefs';
+import { platform } from '../../platform';
 import { btnPrimary, btnSecondary, card } from '../library/ui';
 
 const NO_BRIDGE: UpdateState = { state: 'unavailable', reason: 'Updates only work in the installed app.' };
@@ -49,6 +50,7 @@ export function UpdateCard() {
   };
 
   const busy = update.state === 'checking' || update.state === 'downloading';
+  if (!platform.isDesktop) return null;
   const unavailable = update.state === 'unavailable';
   // Primary only when checking is the real next step; otherwise another button (or a wait) takes the lead.
   const checkIsPrimary = update.state === 'idle' || update.state === 'not-available' || update.state === 'error';

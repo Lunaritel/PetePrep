@@ -1,5 +1,6 @@
 import type { ParsedExam, SnapshotSegment } from '../../../../core/pdf/types';
 import type { PageRenderer } from '../../pdf/pageRenderer';
+import { platform } from '../../platform';
 
 export interface PickedPdf {
   name: string;
@@ -24,7 +25,7 @@ export async function sha256Hex(data: Uint8Array): Promise<string> {
 /** Real implementations. PDF code is imported lazily so a screen that never imports a file stays light. */
 export function createDefaultServices(): ImportServices {
   return {
-    pickPdf: window.deca ? () => window.deca!.openPdf() : null,
+    pickPdf: platform.canPickNatively && window.deca ? () => window.deca!.openPdf() : null,
     hash: sha256Hex,
     async parse(data) {
       const [{ ensurePdfWorker }, { parseExamPdf }] = await Promise.all([

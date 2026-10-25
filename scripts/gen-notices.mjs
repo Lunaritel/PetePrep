@@ -5,9 +5,19 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const root = process.cwd();
-const dirs = execSync('npm ls --omit=dev --all --parseable', { encoding: 'utf8', maxBuffer: 1e8 })
+const productionDirs = execSync('npm ls --omit=dev --all --parseable', { encoding: 'utf8', maxBuffer: 1e8 })
   .split(/\r?\n/)
   .filter(Boolean);
+// Workbox code is bundled into the PWA service worker even though it is installed as a build dependency.
+const allDirs = execSync('npm ls --all --parseable', { encoding: 'utf8', maxBuffer: 1e8 })
+  .split(/\r?\n/)
+  .filter(Boolean);
+const webRuntimeDirs = allDirs.filter((dir) => {
+  const manifest = join(dir, 'package.json');
+  if (!existsSync(manifest)) return false;
+  return JSON.parse(readFileSync(manifest, 'utf8')).name?.startsWith('workbox-') ?? false;
+});
+const dirs = [...new Set([...productionDirs, ...webRuntimeDirs])];
 
 const seen = new Map();
 for (const dir of dirs) {

@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import type { ScreenProps } from '../../app/types';
+import { platform } from '../../platform';
 import {
   exportBackupToFile,
   isAutoBackupEnabled,
@@ -27,7 +28,7 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
   const [auto, setAuto] = useState<boolean>(() => isAutoBackupEnabled());
   const [typed, setTyped] = useState('');
   const typedId = useId();
-  const version = window.deca?.version ?? 'dev';
+  const version = platform.appVersion;
 
   const run = async (work: () => Promise<Notice>): Promise<void> => {
     setBusy(true);
@@ -78,7 +79,7 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
   };
 
   return (
-    <section aria-labelledby="settings-heading" className="mx-auto max-w-3xl space-y-6 px-5 py-8">
+    <section aria-labelledby="settings-heading" className="mx-auto max-w-3xl space-y-6 px-4 py-6 sm:px-5 sm:py-8">
       <h1 id="settings-heading" className="text-2xl font-bold text-ink">
         Settings
       </h1>
@@ -113,8 +114,7 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
       <div className={card}>
         <h2 className="mb-1 text-lg font-bold text-ink">Backup and restore</h2>
         <p className="mb-4 text-sm text-muted">
-          A backup is one file with your exams, pictures and progress. Keep a copy somewhere safe, or move it to another
-          computer.
+          A backup is one file with your exams, pictures and progress. Keep a copy somewhere safe, or {platform.isDesktop ? 'move it to another computer.' : 'restore it in another browser or on another device.'}
         </p>
         <div className="mb-5 flex flex-wrap gap-2">
           <button type="button" className={btnPrimary} disabled={busy} onClick={() => void exportNow()}>
@@ -124,22 +124,20 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
             Restore from backup…
           </button>
         </div>
-        <label className="flex min-h-11 cursor-pointer items-start gap-3">
-          <input
-            type="checkbox"
-            role="switch"
-            checked={auto}
-            onChange={(e) => toggleAuto(e.target.checked)}
-            className="mt-1 h-5 w-5 accent-accent"
-          />
-          <span>
-            <span className="block font-semibold text-ink">Back up automatically after each session</span>
-            <span className="block text-sm text-muted">
-              Saves a copy to <code className="rounded bg-bg px-1">{BACKUP_FOLDER}</code> every time you finish a round.
+        {platform.isDesktop && (
+          <label className="flex min-h-11 cursor-pointer items-start gap-3">
+            <input type="checkbox" role="switch" checked={auto} onChange={(e) => toggleAuto(e.target.checked)} className="mt-1 h-5 w-5 accent-accent" />
+            <span>
+              <span className="block font-semibold text-ink">Back up automatically after each session</span>
+              <span className="block text-sm text-muted">Saves a copy to <code className="rounded bg-bg px-1">{BACKUP_FOLDER}</code> every time you finish a round.</span>
             </span>
-          </span>
-        </label>
+          </label>
+        )}
       </div>
+
+      {!platform.isDesktop && (
+        <p className="rounded-lg border border-line bg-surface px-4 py-3 text-sm text-muted">On iPhone, use Share, then Add to Home Screen, so Safari is less likely to clear your progress.</p>
+      )}
 
       <div className={card}>
         <h2 className="mb-2 text-lg font-bold text-ink">About</h2>
@@ -147,16 +145,19 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
           <strong>PetePrep</strong> · version {version}
         </p>
         <p className="mt-2 text-sm text-muted">
-          Everything runs on this computer. There are no accounts, no tracking and no telemetry, and no exam content is
-          bundled with the app: you import your own DECA exam PDF and it never leaves this computer. The only network use
-          is checking for updates, and only when you ask or turn automatic checks on.
+          {platform.isDesktop
+            ? 'Everything runs on this computer. There are no accounts, no tracking and no telemetry, and no exam content is bundled with the app: you import your own DECA exam PDF and it never leaves this computer. The only network use is checking for updates, and only when you ask or turn automatic checks on.'
+            : 'Your exams and progress stay in this browser on this device. There are no accounts, tracking or telemetry, and imported exam content is not uploaded. The site loads its own files from GitHub Pages; GitHub may record normal web request logs.'}
         </p>
         <p className="mt-2 text-sm text-muted">
           PetePrep is an independent study tool. It is not affiliated with, endorsed by or sponsored by DECA Inc. or the MBA
           Research and Curriculum Center. DECA is a registered trademark of DECA Inc. Answers and explanations are read
           automatically from your PDF and can contain mistakes, so check anything important against the original. Only
-          import exams you are allowed to use. Open-source licenses are in THIRD_PARTY_NOTICES.txt in the app&apos;s
-          resources folder.
+          import exams you are allowed to use. {platform.isDesktop ? (
+            <>Open-source licenses are in THIRD_PARTY_NOTICES.txt in the app's resources folder.</>
+          ) : (
+            <>Open-source licenses: <a className="font-semibold underline" href={`${import.meta.env.BASE_URL}LICENSE`}>MIT license</a> and <a className="font-semibold underline" href={`${import.meta.env.BASE_URL}THIRD_PARTY_NOTICES.txt`}>third-party notices</a>.</>
+          )}
         </p>
       </div>
 
@@ -165,8 +166,9 @@ export function SettingsScreen({ repo, navigate }: ScreenProps) {
       <div className={`${card} border-wrong`}>
         <h2 className="mb-1 text-lg font-bold text-wrong">Reset all data</h2>
         <p className="mb-4 text-sm text-muted">
-          Permanently deletes every exam, picture and answer from this computer. Export a backup first if you might want
-          anything back.
+          {platform.isDesktop
+            ? 'Permanently deletes every exam, picture and answer from this computer. Export a backup first if you might want anything back.'
+            : 'Permanently deletes every exam, picture and answer from this browser on this device. Export a backup first if you might want anything back.'}
         </p>
         <button type="button" className={btnDanger} disabled={busy} onClick={() => setDialog('wipe')}>
           Reset all data…
