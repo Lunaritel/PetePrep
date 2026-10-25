@@ -1,11 +1,21 @@
 # PetePrep user guide
 
-PetePrep is a free Windows app for practicing DECA-style multiple-choice exams. You give it an exam PDF that
-has an answer key at the back, and it turns it into practice questions. It keeps re-testing the ones you
-miss until you have answered every question correctly twice in a row.
+PetePrep is a free Windows app and installable web app for practicing DECA-style multiple-choice exams. You give it an exam PDF that has an answer key at the back, and it turns it into practice questions. It keeps re-testing the ones you miss until you have answered every question correctly twice in a row.
 
 It is an independent project. It is not affiliated with, endorsed by or sponsored by DECA Inc. or the MBA
 Research and Curriculum Center. PetePrep includes no exam content: you bring your own PDF.
+
+## Use on your phone
+
+Open **[PetePrep for phones](https://lunaritel.github.io/PetePrep/)** in Safari on iPhone or Chrome on Android. The web app is free and installs from the browser, with no app store or account needed.
+
+1. On **iPhone**, open the link in Safari, tap Share, choose **Add to Home Screen**, then tap Add. Open PetePrep from the new icon.
+2. On **Android**, open the link in Chrome, open the menu, then choose **Install app** or **Add to Home screen**.
+3. Import the exam PDF from Files or Downloads. The web version accepts PDFs up to 25 MB. The PDF must contain selectable text; scanned photos are not supported.
+4. After the first visit, the app shell, fonts and PDF worker are cached, so you can use PetePrep offline. Updates are offered by the website and service worker.
+5. Exams and progress are saved in the current browser on this device. They are not uploaded and do not sync automatically. Use **Settings > Export backup** to download a backup, then **Settings > Restore from backup** on the other device.
+
+On iPhone, adding PetePrep to the Home Screen makes Safari less likely to clear its storage, but it cannot guarantee that data is kept forever. Export backups regularly. GitHub may record normal web request logs when the site is loaded or updated. PetePrep uses no analytics or tracking.
 
 ## 1. Install
 
@@ -105,20 +115,19 @@ Master exam asks for everything not yet mastered, which includes questions you a
 
 ## 7. Keep your data safe
 
-Everything is stored on your computer. Nothing is uploaded.
+On Windows, everything is stored on your computer. In the web app, exams and progress are stored in the browser on that device. Imported exam content is not uploaded.
 
-- **Settings > Export backup** saves everything (exams, pictures, progress) to one file you choose.
+- **Settings > Export backup** downloads or saves everything (exams, pictures, progress) to one file.
 - **Settings > Restore from backup** brings it back. This replaces everything currently in the app.
-- PetePrep also saves a backup after each round to `Documents\PetePrep Backups`. You can turn this off in Settings.
+- The Windows app also saves a backup after each round to `Documents\PetePrep Backups`. You can turn this off in Settings. The web app does not make automatic folder backups.
 
-To move to a new computer: export a backup on the old one, install PetePrep on the new one, then restore.
+To move to a new computer or phone: export a backup on the old device, open PetePrep on the new device, then restore that file. Browser storage can be cleared, especially in private browsing or by device cleanup tools, so keep backup files somewhere safe.
 
 ## 8. Updates
 
-By default PetePrep never connects to the internet. In **Settings > Updates** you can press
-**Check for updates**, or turn on **Check for updates automatically** (it looks once when the app opens).
-Updating never happens without your click. The only thing the check sends is a request to GitHub asking whether
-a newer release exists.
+On Windows, PetePrep checks for updates only when you ask or enable automatic checks in **Settings > Updates**. It never downloads or installs an update without your click.
+
+On phones, the site loads its own files from GitHub Pages. The service worker checks for updated site files and PetePrep offers a **Reload** button when an update is ready. No exam content or progress is sent to GitHub. Normal web request logs may still be kept by the host.
 
 ## Troubleshooting
 
@@ -127,6 +136,7 @@ a newer release exists.
 | "No questions were found" or "looks scanned" | The PDF has no text layer. Use the original digital PDF, not a scan or photo. |
 | Fewer questions than expected | Open the review step. If the count is wrong, the PDF layout is not supported yet. See "Report a problem" below. |
 | An answer or explanation looks wrong | Use the review step to compare with the PDF and fix it before saving. Saved questions cannot be edited later: delete the exam in the Library, then import it again and fix it in the review step. |
+| The phone refuses a large PDF | The web app limits PDF files to 25 MB to protect phone memory. Try a smaller file. |
 | Windows blocks the installer | See "Windows protected your PC" above. |
 | The portable zip says it cannot update | Expected. Download the newest zip from the releases page, or use the installer version. |
 | I want to start over | **Settings > Reset all data** (you must type DELETE). Export a backup first if unsure. |
