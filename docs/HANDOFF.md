@@ -115,10 +115,7 @@ desktop-only text or errors):
 
 ### Milestones (do in order; each ends green: typecheck, tests, and a manual check)
 
-**M0. Spike (about an hour).** Add `vite.web.config.ts` (root `src/renderer`, plugins react and tailwind, `define`
-for `__APP_VERSION__`, `base: '/PetePrep/'`) and scripts `dev:web` and `build:web` writing to `dist-web/`. Run it in a
-desktop browser, then in a phone-sized viewport. Import a PDF via the file input. Write down what breaks in a short
-note and update this plan before continuing.
+**M0. Spike (completed 2026-10-25).** The web build and `dev:web` / `build:web` scripts are present. The production build succeeds, and the phone-sized Playwright journey passes at 360 x 800 in iPhone 14/WebKit and Pixel 7/Chromium emulation, including synthetic PDF file-input import, study flow, backup/restore, and offline reload. No blocking layout/runtime failures were reproduced. The build warns that the PDF.js worker (~2.42 MB) and PDF.js chunk (~541 KB) exceed the 500 KB chunk advisory. Physical-device performance remains for M4; the detailed narrow-layout pass remains M3. See `docs/M0_SPIKE.md` for the results and limitations.
 
 **M1. Platform layer.** Add `src/renderer/src/platform/` exposing one small interface (`canPickNatively`,
 `downloadFile(name, text)`, `pickTextFile()`, `isDesktop`, `appVersion`). The desktop implementation wraps
