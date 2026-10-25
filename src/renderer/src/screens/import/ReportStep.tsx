@@ -9,7 +9,7 @@ interface Props {
 
 function Stat({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-xl border border-line bg-surface px-5 py-4">
+    <div className="rounded-xl border border-line bg-surface px-4 py-3 sm:px-5 sm:py-4">
       <div className="text-2xl font-semibold text-ink">{value}</div>
       <div className="text-sm text-muted">{label}</div>
     </div>
@@ -32,7 +32,7 @@ export function ReportStep({ fileName, parsed, onReview, onAnother }: Props) {
         {parsed.testCode ? ` · Test ${parsed.testCode}` : ''} · <span className="break-all">{fileName}</span>
       </p>
 
-      <div className="mt-5 grid grid-cols-3 gap-3">
+      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Stat label="Pages" value={report.pageCount} />
         <Stat label="Questions found" value={report.questionCount} />
         <Stat label="Answer-key entries" value={report.keyCount} />

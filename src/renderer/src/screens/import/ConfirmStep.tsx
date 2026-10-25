@@ -67,7 +67,7 @@ export function ConfirmStep({ title, summary, saving, error, onBack, onSave }: P
         </p>
       )}
 
-      <div className="mt-6 flex gap-3">
+      <div className="mt-6 flex flex-wrap gap-2">
         <button type="button" onClick={onBack} disabled={saving} className="rounded-lg border border-line bg-surface px-5 py-2.5 font-semibold text-ink hover:bg-bg disabled:opacity-50">
           Back
         </button>

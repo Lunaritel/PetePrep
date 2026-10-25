@@ -93,6 +93,7 @@ html {
 
 body {
   margin: 0;
+  overflow-x: hidden;
   min-height: 100dvh;
   background: var(--bg);
   color: var(--ink);
@@ -105,6 +106,11 @@ body {
 
 /* In the base layer so utilities such as outline-none can still opt a programmatic focus target out. */
 @layer base {
+  button {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;

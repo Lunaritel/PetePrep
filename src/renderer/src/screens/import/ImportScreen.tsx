@@ -88,6 +88,7 @@ export function ImportScreen({ repo, navigate, services: override }: ImportScree
   const handleFile = useCallback(
     async (picked: PickedPdf) => {
       closeRenderer();
+      if (typeof navigator !== 'undefined' && navigator.storage?.persist) void navigator.storage.persist().catch(() => false);
       setError(null);
       setSaveError(null);
       setFile(picked);
@@ -104,6 +105,7 @@ export function ImportScreen({ repo, navigate, services: override }: ImportScree
         }
 
         setBusyMessage('Finding the questions and the answer key…');
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
         const result = await services.parse(picked.data);
         setParsed(result);
         const initial = toDrafts(result);
@@ -112,6 +114,7 @@ export function ImportScreen({ repo, navigate, services: override }: ImportScree
         const withVisual = result.questions.filter((q) => q.visual);
         if (withVisual.length > 0) {
           setBusyMessage(`Taking screenshots of ${withVisual.length} question${withVisual.length === 1 ? '' : 's'} with pictures or tables…`);
+          await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
           const shots = new Map<number, Blob>();
           for (const q of withVisual) {
             try {
@@ -186,7 +189,7 @@ export function ImportScreen({ repo, navigate, services: override }: ImportScree
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-8">
+    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
       <header className="mb-4 flex items-end justify-between gap-4">
         <h1 className="text-2xl font-semibold text-ink">Import an exam</h1>
         <button

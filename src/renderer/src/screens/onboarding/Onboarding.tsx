@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { btnPrimary, btnSecondary, card } from '../library/ui';
+import { platform } from '../../platform';
 
 const STORAGE_KEY = 'deca.onboarded';
 
@@ -30,7 +31,9 @@ const CARDS = [
   },
   {
     title: 'Private by design',
-    body: 'Everything stays on this computer. There are no accounts, no internet connection needed, no tracking, and no exam content is built into the app. You can export a backup of your progress at any time from Settings.',
+    body: platform.isDesktop
+      ? 'Everything stays on this computer. There are no accounts, no internet connection needed, no tracking, and no exam content is built into the app. You can export a backup of your progress at any time from Settings.'
+      : 'Your exams and progress stay in this browser on this device. There are no accounts, tracking or telemetry. PetePrep loads from GitHub Pages and can work offline after the first visit. GitHub may record normal web request logs. You can export a backup from Settings and restore it on another device.',
   },
 ] as const;
 
@@ -56,7 +59,7 @@ export function Onboarding({ onDone }: Props) {
   };
 
   return (
-    <section aria-label="Welcome" className="mx-auto flex min-h-[70vh] max-w-xl items-center px-5 py-8">
+    <section aria-label="Welcome" className="mx-auto flex min-h-[70vh] max-w-xl items-center px-4 py-8 sm:px-5">
       <div className={`${card} w-full`}>
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted" aria-live="polite">
           Step {index + 1} of {CARDS.length}

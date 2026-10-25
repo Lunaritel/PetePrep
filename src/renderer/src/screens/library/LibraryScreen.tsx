@@ -115,7 +115,7 @@ export function LibraryScreen({ repo, navigate }: ScreenProps) {
   };
 
   return (
-    <section aria-labelledby="library-heading" className="mx-auto max-w-4xl px-5 py-8">
+    <section aria-labelledby="library-heading" className="mx-auto max-w-4xl px-4 py-6 sm:px-5 sm:py-8">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 id="library-heading" className="text-2xl font-bold text-ink">
@@ -275,7 +275,7 @@ function ExamCardView({ item, navigate, onDelete, onReset }: CardProps) {
       </p>
 
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <div className="flex flex-wrap gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
           <button
             type="button"
             className={btnPrimary}
@@ -320,7 +320,7 @@ function ExamCardView({ item, navigate, onDelete, onReset }: CardProps) {
             {HELP.stats.label}
           </button>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
           <button
             type="button"
             className={btnQuiet}

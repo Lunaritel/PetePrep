@@ -249,7 +249,7 @@ export function ReviewStep({ drafts, onChange, renderer, onBack, onContinue }: P
             Compare each question with the PDF. Anything you change here is what you will study.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-2">
           <button type="button" onClick={onBack} className="rounded-lg border border-line bg-surface px-4 py-2 font-semibold text-ink hover:bg-bg">
             Back
           </button>
