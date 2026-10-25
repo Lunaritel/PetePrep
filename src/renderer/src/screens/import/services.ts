@@ -25,7 +25,7 @@ export async function sha256Hex(data: Uint8Array): Promise<string> {
 /** Real implementations. PDF code is imported lazily so a screen that never imports a file stays light. */
 export function createDefaultServices(): ImportServices {
   return {
-    pickPdf: platform.canPickNatively && window.deca ? () => window.deca!.openPdf() : null,
+    pickPdf: platform.canPickNatively ? () => platform.pickPdf() : null,
     hash: sha256Hex,
     async parse(data) {
       const [{ ensurePdfWorker }, { parseExamPdf }] = await Promise.all([

@@ -5,6 +5,11 @@ export interface PickedTextFile {
   text: string;
 }
 
+export interface PickedPdfFile {
+  name: string;
+  data: Uint8Array;
+}
+
 function bridge(): DecaApi | undefined {
   return typeof window === 'undefined' ? undefined : window.deca;
 }
@@ -17,6 +22,10 @@ export const platform = {
   get canPickNatively(): boolean { return !isWebBuild() && Boolean(bridge()); },
   get isDesktop(): boolean { return !isWebBuild(); },
   get appVersion(): string { return bridge()?.version ?? (typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'dev'); },
+  async pickPdf(): Promise<PickedPdfFile | null> {
+    const deca = bridge();
+    return deca ? deca.openPdf() : null;
+  },
   async requestPersistentStorage(): Promise<boolean> {
     if (!isWebBuild() || typeof navigator === 'undefined' || !navigator.storage?.persist) return false;
     try {

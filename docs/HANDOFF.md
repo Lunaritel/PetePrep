@@ -117,51 +117,19 @@ desktop-only text or errors):
 
 **M0. Spike (completed 2026-10-25).** The web build and `dev:web` / `build:web` scripts are present. The production build succeeds, and the phone-sized Playwright journey passes at 360 x 800 in iPhone 14/WebKit and Pixel 7/Chromium emulation, including synthetic PDF file-input import, study flow, backup/restore, and offline reload. No blocking layout/runtime failures were reproduced. The build warns that the PDF.js worker (~2.42 MB) and PDF.js chunk (~541 KB) exceed the 500 KB chunk advisory. Physical-device performance remains for M4; the detailed narrow-layout pass remains M3. See `docs/M0_SPIKE.md` for the results and limitations.
 
-**M1. Platform layer.** Add `src/renderer/src/platform/` exposing one small interface (`canPickNatively`,
-`downloadFile(name, text)`, `pickTextFile()`, `isDesktop`, `appVersion`). The desktop implementation wraps
-`window.deca`; the web implementation uses Blob downloads and a file input. Route `backupService`, import and
-Settings through it. Hide desktop-only UI on web. Keep all existing desktop behavior and tests unchanged.
+**M1. Platform layer (completed 2026-10-25).** The `src/renderer/src/platform/` abstraction exposes native-picker capability, PDF and text-file picking, downloads, desktop detection, app version and best-effort persistent browser storage. The desktop implementation wraps `window.deca`; the web implementation uses Blob downloads and file inputs. Import, backup and Settings use the abstraction, desktop-only update and auto-backup UI is hidden on web, and platform tests cover native PDF picking and storage persistence. Existing desktop tests remain green.
 
-**M2. PWA.** Web manifest (name PetePrep, `display: standalone`, theme and background colors from the tokens),
-icons 192, 512 and a maskable 512 generated from `scripts/make-icon.mjs`, a service worker that precaches the app
-shell, fonts and the pdf.js worker so it works offline (`vite-plugin-pwa` is MIT; confirm and record its license),
-an "update ready, reload" prompt, `navigator.storage.persist()` on first import, and an iPhone note: "Add to Home
-Screen so your progress is not cleared by Safari". Verify offline by loading once, going offline, and reloading.
+**M2. PWA (completed locally 2026-10-25).** The web manifest, 192/512/maskable icons, Workbox service worker, app-shell/font/PDF-worker precache, update-ready reload prompt, persistent-storage request on import, and iPhone storage note are implemented. The production build and offline reload journey pass in browser emulation. Workbox is MIT and its notices are included. The updated build is not deployed yet; release deployment remains gated on approval of tag `v0.2.0`.
 
-**M3. Phone layout.** The screens were built for 760px and wider. Make every screen usable at 360 to 430px wide:
-header navigation (currently four items in a row), Library exam cards (a 5-button row plus a quiet group), the Mistake
-bank strip, the import review screen (list + PDF page + form side by side, must stack), Stats tables (make them card
-lists on narrow screens), Settings. Use `min-h-[100dvh]`, safe-area insets, 44px touch targets, no hover-only
-affordances, no horizontal scroll, readable explanation text. Keyboard shortcuts (A to D, Enter) stay for desktop.
-This is a layout pass only: make the existing design work on a phone. Do NOT do a visual redesign (new look, new
-illustrations, new animations). The owner postponed the visual pass as a separate, later job.
+**M3. Phone layout (completed locally 2026-10-25).** The header navigation, Library action rows, import review layout, Stats card list, Settings and other tested screens are usable at 360 to 430px. Playwright checks for document/body overflow and visible elements clipped outside the viewport at 360, 390 and 430px across the main mobile journey. No horizontal clipping was reproduced in iPhone 14/WebKit or Pixel 7/Chromium emulation. This remains a layout-only pass, not a redesign.
 
-**M4. Mobile performance.** Measure PDF import on a mid-range Android and an iPhone with both sample exams
-(100 questions each). If layout and parsing block the main thread, add progress feedback or move work off the main
-thread. Set a sensible maximum PDF size with a friendly message. Do not regress parsing correctness.
+**M4. Mobile performance (partially complete 2026-10-25).** The web import limit is 25 MB and the UI displays a busy state during parsing. Local browser-emulation import-to-report timings for the two 100-question sample exams were 1.6s and 2.4s in Pixel 7/Chromium emulation, and 5.2s and 5.1s in iPhone 14/WebKit emulation. See `docs/PHONE_ACCEPTANCE.md`. These are not physical-device measurements. Do not change parsing logic based on these results alone; actual iPhone and mid-range Android testing remains required.
 
-**M5. Hosting and CI.** Add `.github/workflows/pages.yml`: on tags `v*` and manual dispatch, `npm ci`, typecheck,
-test, `build:web`, upload the Pages artifact, deploy. Enable Pages with source "GitHub Actions" (needs repo admin;
-ask the owner or use `gh api`). Site URL will be https://lunaritel.github.io/PetePrep/. Production CSP for the web
-build: `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:;
-worker-src 'self' blob:; manifest-src 'self'; connect-src 'self'`. Do not break `release.yml` (desktop releases).
+**M5. Hosting and CI (implemented; release deployment pending).** `.github/workflows/pages.yml` builds and tests the PWA on pull requests, and on `v*` tags or manual dispatch it deploys the Pages artifact. The production CSP is configured for the web build, `release.yml` remains separate, and the site URL is `https://lunaritel.github.io/PetePrep/`. Local build and offline tests pass. The current local changes have not been pushed or deployed.
 
-**M6. Automated and real-device testing.**
-- Playwright (add `@playwright/test` as a dev dependency) with iPhone 14 and Pixel 7 device emulation. Script the
-  journey: complete onboarding, import a PDF through the file input, review and save, practice with some misses,
-  Weak points, Mistake bank, export a backup (download) and restore it. Assert the invariants in section 4.
-- Check installability (manifest and service worker present), offline reload, and no console errors.
-- Ask the owner to try it on a real iPhone and Android phone; record results.
+**M6. Automated and real-device testing (automated complete; physical-device check pending).** Playwright runs the onboarding, synthetic PDF file-input import, review/save, practice and mistake-bank invariants, backup export/restore, installability metadata, offline reload, console-error checks and responsive checks at 360/390/430px in iPhone 14/WebKit and Pixel 7/Chromium emulation. Current local validation: 348 tests across 33 files, typecheck, PWA build, desktop build, Windows installer and portable ZIP all pass. Ask the owner to test the updated deployed build on an actual iPhone and Android phone before release.
 
-**M7. Docs and legal.**
-- README "Use on your phone" and a USER_GUIDE section: open the link, Add to Home Screen, how to get a PDF onto the
-  phone, how to move progress between devices (export a backup, restore on the other device), iPhone storage warning.
-- The site must show the same not-affiliated, accuracy and "only import exams you are allowed to use" notices, a link
-  to the MIT license, and the third-party notices (publish `THIRD_PARTY_NOTICES.txt` as a static file linked from
-  About; web bundles include extra libraries such as the service worker toolkit, so regenerate and verify them).
-- Privacy text must stay true: no analytics, no accounts; the only requests are the site loading its own files from
-  GitHub Pages. Mention that GitHub, like any host, sees normal web request logs.
-- Bump `package.json` to `0.2.0`, update the user guide, tag `v0.2.0` (this builds the desktop release and deploys the site). Ask the owner before pushing a tag.
+**M7. Docs and legal (content complete; release approval pending).** README and USER_GUIDE explain phone installation, PDF import, offline use, backups and restore between devices, iPhone storage caveats, no analytics, normal GitHub request logs, and the 25 MB web limit. About/Settings includes the non-affiliation, accuracy and permitted-use notices, MIT license link and third-party notices link. `THIRD_PARTY_NOTICES.txt` was regenerated to include Workbox. The dependency audit previously reported 21 advisories, including critical findings, so the toolchain was updated to Electron 45, electron-builder 26, electron-vite 6, Vite 7, Vitest 5, `@vitejs/plugin-react` 5, `vite-plugin-pwa` 1.3 and Workbox 7.4; `npm audit` now reports zero vulnerabilities. See `docs/PHONE_ACCEPTANCE.md` for build and audit details. `package.json` is already at `0.2.0`. Do not create or push tag `v0.2.0` without explicit owner approval; it also publishes the desktop release.
 
 ### Out of scope for v0.2.0
 Accounts or cloud sync (breaks the offline, no-accounts promise), a native iPhone or Android app, React Native or

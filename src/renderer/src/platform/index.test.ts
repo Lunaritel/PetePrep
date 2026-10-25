@@ -42,3 +42,20 @@ describe('platform.requestPersistentStorage', () => {
     expect(persist).not.toHaveBeenCalled();
   });
 });
+
+describe('platform.pickPdf', () => {
+  it('uses the native PDF picker when the desktop bridge is available', async () => {
+    const picked = { name: 'exam.pdf', data: new Uint8Array([1, 2, 3]) };
+    const openPdf = vi.fn().mockResolvedValue(picked);
+    window.deca = { ...({} as NonNullable<typeof window.deca>), openPdf };
+
+    await expect(platform.pickPdf()).resolves.toEqual(picked);
+    expect(openPdf).toHaveBeenCalledOnce();
+    window.deca = undefined;
+  });
+
+  it('returns null when the desktop bridge is unavailable', async () => {
+    window.deca = undefined;
+    await expect(platform.pickPdf()).resolves.toBeNull();
+  });
+});

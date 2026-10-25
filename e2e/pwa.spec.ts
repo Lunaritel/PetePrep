@@ -32,8 +32,37 @@ async function syntheticExamPdf(): Promise<Buffer> {
 }
 
 async function expectNoHorizontalOverflow(page: Page) {
-  const widths = await page.evaluate(() => ({ viewport: window.innerWidth, document: document.documentElement.scrollWidth }));
+  const widths = await page.evaluate(() => {
+    const viewport = window.innerWidth;
+    const clipped: string[] = [];
+    for (const element of Array.from(document.querySelectorAll<HTMLElement>('body *'))) {
+      if (element.closest('[data-horizontal-scroll], .overflow-auto, .overflow-x-auto, .overflow-scroll, .overflow-x-scroll')) continue;
+      const style = getComputedStyle(element);
+      if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) continue;
+      const rect = element.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) continue;
+      if (rect.left < -1 || rect.right > viewport + 1) {
+        clipped.push(`${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ''}.${String(element.className).split(' ').slice(0, 2).join('.')}`);
+      }
+    }
+    return {
+      viewport,
+      document: document.documentElement.scrollWidth,
+      body: document.body.scrollWidth,
+      clipped: clipped.slice(0, 8),
+    };
+  });
   expect(widths.document, 'document width ' + widths.document + 'px exceeded viewport ' + widths.viewport + 'px').toBeLessThanOrEqual(widths.viewport);
+  expect(widths.body, 'body width ' + widths.body + 'px exceeded viewport ' + widths.viewport + 'px').toBeLessThanOrEqual(widths.viewport);
+  expect(widths.clipped, 'visible elements clipped outside viewport: ' + widths.clipped.join(', ')).toEqual([]);
+}
+
+async function expectPhoneWidths(page: Page) {
+  for (const width of [360, 390, 430]) {
+    await page.setViewportSize({ width, height: 800 });
+    await expectNoHorizontalOverflow(page);
+  }
+  await page.setViewportSize({ width: 360, height: 800 });
 }
 
 test('mobile PWA installs, imports, studies, backs up, restores and works offline', async ({ page, context }, testInfo) => {
@@ -55,16 +84,16 @@ test('mobile PWA installs, imports, studies, backs up, restores and works offlin
   await page.getByRole('button', { name: 'Next' }).click();
   await page.getByRole('button', { name: 'Get started' }).click();
   await expect(page.getByRole('heading', { name: 'Your exams' })).toBeVisible();
-  await expectNoHorizontalOverflow(page);
+  await expectPhoneWidths(page);
 
   await page.getByRole('navigation', { name: 'Main' }).getByRole('button', { name: 'Import exam' }).click();
   const pdf = await syntheticExamPdf();
   await page.getByTestId('pdf-input').setInputFiles({ name: 'invented-practice-exam.pdf', mimeType: 'application/pdf', buffer: pdf });
   await expect(page.getByRole('heading', { name: 'We read your exam' })).toBeVisible({ timeout: 30_000 });
-  await expectNoHorizontalOverflow(page);
+  await expectPhoneWidths(page);
   await page.getByRole('button', { name: 'Review questions' }).click();
   await expect(page.getByRole('heading', { name: 'Check your questions' })).toBeVisible();
-  await expectNoHorizontalOverflow(page);
+  await expectPhoneWidths(page);
   await page.getByRole('button', { name: 'Continue to save' }).click();
   const acknowledgement = page.getByRole('checkbox', { name: /checked the flagged questions/i });
   if (await acknowledgement.count()) await acknowledgement.check();
@@ -76,7 +105,7 @@ test('mobile PWA installs, imports, studies, backs up, restores and works offlin
   await page.getByRole('button', { name: /^A: Circle/ }).click();
   await page.getByRole('button', { name: 'Finish', exact: true }).click();
   await expect(page.getByTestId('bank-line')).toContainText('1 question is in your mistake bank');
-  await expectNoHorizontalOverflow(page);
+  await expectPhoneWidths(page);
   await page.getByRole('navigation', { name: 'Main' }).getByRole('button', { name: 'Mistake bank' }).click();
   await page.getByRole('button', { name: 'Start mixed drill' }).click();
   await page.getByRole('button', { name: /^B: Rhombus/ }).click();
@@ -89,10 +118,10 @@ test('mobile PWA installs, imports, studies, backs up, restores and works offlin
   await page.getByRole('button', { name: 'Back to library', exact: true }).click();
   await page.getByRole('button', { name: 'Stats for INVENTED PRACTICE EXAM' }).click();
   await expect(page.getByText('Statistics', { exact: true })).toBeVisible();
-  await expectNoHorizontalOverflow(page);
+  await expectPhoneWidths(page);
 
   await page.getByRole('navigation', { name: 'Main' }).getByRole('button', { name: 'Settings' }).click();
-  await expectNoHorizontalOverflow(page);
+  await expectPhoneWidths(page);
   await expect(page.getByText(/Back up automatically after each session/)).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Updates' })).toHaveCount(0);
   await expect(page.getByText(/On iPhone, use Share/)).toBeVisible();
