@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import type { PickedPdf } from './services';
+import { platform } from '../../platform';
 
 interface Props {
   error: string | null;
@@ -18,6 +19,8 @@ function readBytes(file: File): Promise<Uint8Array> {
   });
 }
 
+const MAX_PDF_BYTES = 25 * 1024 * 1024;
+
 function isPdf(file: File): boolean {
   return file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
 }
@@ -31,6 +34,10 @@ export function ChooseStep({ error, canUseNativePicker, onNativePick, onFile }: 
     if (!file) return;
     if (!isPdf(file)) {
       setLocalError('That file is not a PDF. Choose the exam PDF you downloaded from DECA.');
+      return;
+    }
+    if (file.size > MAX_PDF_BYTES) {
+      setLocalError('This PDF is larger than 25 MB. Try a smaller copy to avoid running out of memory on your phone.');
       return;
     }
     setLocalError(null);
@@ -60,8 +67,7 @@ export function ChooseStep({ error, canUseNativePicker, onNativePick, onFile }: 
           Choose your DECA exam PDF
         </h2>
         <p className="mx-auto mt-2 max-w-md text-muted">
-          Pick the exam file with the questions and the answer key. The app reads it on this computer. Nothing is
-          uploaded.
+          Pick the exam file with the questions and the answer key. {platform.isDesktop ? 'The app reads it on this computer.' : 'This browser reads it on this device.'} Nothing is uploaded.
         </p>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted">
           Only import exams you are allowed to use. PetePrep does not include or share any exam content.

@@ -108,7 +108,7 @@ export function StatsScreen({ repo, navigate, examId }: ScreenProps & { examId: 
 
   if (error) {
     return (
-      <section className="mx-auto max-w-4xl px-5 py-8">
+      <section className="mx-auto max-w-4xl px-4 py-6 sm:px-5 sm:py-8">
         <p role="alert" className="mb-4 rounded-lg border border-wrong bg-wrong-bg px-4 py-3 text-sm text-wrong">
           {error}
         </p>
@@ -122,7 +122,7 @@ export function StatsScreen({ repo, navigate, examId }: ScreenProps & { examId: 
   const { progress } = study;
 
   return (
-    <section aria-labelledby="stats-heading" className="mx-auto max-w-4xl space-y-6 px-5 py-8">
+    <section aria-labelledby="stats-heading" className="mx-auto max-w-4xl space-y-6 px-4 py-6 sm:px-5 sm:py-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 id="stats-heading" className="text-2xl font-bold text-ink">
@@ -163,7 +163,7 @@ export function StatsScreen({ repo, navigate, examId }: ScreenProps & { examId: 
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-bold text-ink">Question history</h2>
           <div className="flex flex-wrap items-center gap-2">
-            <div role="group" aria-label="Filter by status" className="flex gap-1">
+            <div role="group" aria-label="Filter by status" className="flex flex-wrap gap-1">
               {FILTERS.map((f) => (
                 <button
                   key={f.value}
@@ -193,7 +193,8 @@ export function StatsScreen({ repo, navigate, examId }: ScreenProps & { examId: 
         {rows.length === 0 ? (
           <p className="text-sm text-muted">No questions match this filter.</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="space-y-3">
+          <div className="hidden overflow-x-auto sm:block">
             <table className="w-full min-w-[640px] border-collapse text-left text-sm">
               <caption className="sr-only">
                 Per-question history for {study.exam.title}, sorted by{' '}
@@ -248,6 +249,24 @@ export function StatsScreen({ repo, navigate, examId }: ScreenProps & { examId: 
                 ))}
               </tbody>
             </table>
+          </div>
+          <ul className="grid gap-3 sm:hidden" aria-label="Per-question history">
+            {rows.map((q) => (
+              <li key={q.id} className="rounded-xl border border-line bg-surface p-4">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <h3 className="font-semibold text-ink">Question {q.number}</h3>
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_STYLE[q.status]}`}>{q.status}</span>
+                </div>
+                <p className="mt-2 break-words text-sm text-ink">{q.stem}</p>
+                <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                  <div><dt className="text-xs text-muted">Attempts</dt><dd className="font-semibold text-ink">{q.attempts}</dd></div>
+                  <div><dt className="text-xs text-muted">Correct</dt><dd className="font-semibold text-ink">{q.correctPct === null ? '-' : `${q.correctPct}%`}</dd></div>
+                  <div><dt className="text-xs text-muted">Correct streak</dt><dd className="font-semibold text-ink">{q.streak}</dd></div>
+                  <div><dt className="text-xs text-muted">Average time</dt><dd className="font-semibold text-ink">{q.avgTimeMs === null ? '-' : formatDuration(q.avgTimeMs)}</dd></div>
+                </dl>
+              </li>
+            ))}
+          </ul>
           </div>
         )}
       </div>
