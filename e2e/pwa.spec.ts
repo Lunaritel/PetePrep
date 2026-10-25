@@ -69,6 +69,12 @@ test('mobile PWA installs, imports, studies, backs up, restores and works offlin
   const consoleErrors: string[] = [];
   page.on('pageerror', (error) => consoleErrors.push(error.message));
   page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
+  if (testInfo.project.metadata.noStreamIteration) {
+    await page.addInitScript(() => {
+      delete (ReadableStream.prototype as Partial<ReadableStream>)[Symbol.asyncIterator];
+      delete (ReadableStream.prototype as Partial<ReadableStream>).values;
+    });
+  }
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto('/');
 

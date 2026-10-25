@@ -10,6 +10,8 @@ export default defineConfig({
   projects: [
     { name: 'iphone-14', use: { ...devices['iPhone 14'], browserName: 'webkit' } },
     { name: 'pixel-7', use: { ...devices['Pixel 7'], browserName: 'chromium' } },
+    // Older iOS Safari cannot `for await` over a ReadableStream; Playwright's WebKit can, so remove it.
+    { name: 'iphone-older-safari', use: { ...devices['iPhone 14'], browserName: 'webkit' }, metadata: { noStreamIteration: true } },
   ],
   webServer: {
     command: 'npm run build:web && npm run preview:web',
