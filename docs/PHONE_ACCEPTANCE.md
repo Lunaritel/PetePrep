@@ -42,3 +42,14 @@ After those updates:
 2. The updated source is local to `web/pwa`; the deployed Pages site has not been refreshed with these changes.
 3. Do not create or push tag `v0.2.0` until the owner explicitly approves the release. That tag also triggers the desktop release workflow.
 4. No exam PDFs are tracked, and `..\pdfs` remains outside the repository.
+
+## Physical-device follow-up template
+
+Run the updated build on the actual devices after the release candidate is deployed. Keep the licensed PDFs on-device; do not send them or their text to the repository. Record elapsed time from selecting the file to the import report, whether the UI remains responsive, and any memory/browser warnings.
+
+| Device and OS | Sample PDF | Import-to-report time | UI responsive? | Notes |
+| --- | --- | --- | --- | --- |
+| iPhone and iOS version | Hospitality/Tourism | Pending | Pending | |
+| iPhone and iOS version | Hospitality District | Pending | Pending | |
+| Android model and OS version | Hospitality/Tourism | Pending | Pending | |
+| Android model and OS version | Hospitality District | Pending | Pending | |
