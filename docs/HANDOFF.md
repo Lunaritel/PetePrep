@@ -98,8 +98,8 @@ Code style
 ## 5. MISSION: make PetePrep available on phones, for free (target v0.2.0)
 
 Decision already made with the owner: build an installable **web app (PWA)** hosted free on **GitHub Pages**, using
-the existing React renderer. Do not build a React Native or native iOS app. Optional later: wrap the PWA as an Android
-APK (Trusted Web Activity) if the owner wants a Play Store listing ($25 one-time).
+the existing React renderer. Do not build a React Native or native iOS app, and do not make an Android APK or Play
+Store listing (the owner decided against it).
 
 Why it is feasible: the renderer is already a web app. Dexie/IndexedDB, pdf.js and every screen run in a browser.
 Only these places use the desktop bridge (all already tolerate `window.deca` being undefined, but some show
@@ -136,7 +136,8 @@ header navigation (currently four items in a row), Library exam cards (a 5-butto
 bank strip, the import review screen (list + PDF page + form side by side, must stack), Stats tables (make them card
 lists on narrow screens), Settings. Use `min-h-[100dvh]`, safe-area insets, 44px touch targets, no hover-only
 affordances, no horizontal scroll, readable explanation text. Keyboard shortcuts (A to D, Enter) stay for desktop.
-Do the visual polish the owner postponed together with this pass.
+This is a layout pass only: make the existing design work on a phone. Do NOT do a visual redesign (new look, new
+illustrations, new animations). The owner postponed the visual pass as a separate, later job.
 
 **M4. Mobile performance.** Measure PDF import on a mid-range Android and an iPhone with both sample exams
 (100 questions each). If layout and parsing block the main thread, add progress feedback or move work off the main
@@ -163,16 +164,17 @@ worker-src 'self' blob:; manifest-src 'self'; connect-src 'self'`. Do not break 
   About; web bundles include extra libraries such as the service worker toolkit, so regenerate and verify them).
 - Privacy text must stay true: no analytics, no accounts; the only requests are the site loading its own files from
   GitHub Pages. Mention that GitHub, like any host, sees normal web request logs.
-- Bump `package.json` to `0.2.0`, update the user guide, tag `v0.2.0` (this builds the desktop release and the site).
+- Bump `package.json` to `0.2.0`, update the user guide, tag `v0.2.0` (this builds the desktop release and deploys the site). Ask the owner before pushing a tag.
 
 ### Out of scope for v0.2.0
-Accounts or cloud sync (breaks the offline, no-accounts promise), a native iPhone app (costs $99/year), React Native
-or Flutter rewrites, push notifications, custom domain.
+Accounts or cloud sync (breaks the offline, no-accounts promise), a native iPhone or Android app, React Native or
+Flutter rewrites, a visual redesign, push notifications, custom domain.
 
-### Decisions to confirm with the owner before starting
-1. Ship web and the next desktop release together as v0.2.0? (Recommended yes.)
-2. Include the postponed visual pass in M3? (Recommended yes.)
-3. Later, an Android APK via Trusted Web Activity for the Play Store ($25 one-time)? (Not now.)
+### Decisions already made by the owner
+1. Ship the web version together with the next desktop release as **v0.2.0** (one tag builds the desktop release
+   and deploys the site).
+2. **No visual redesign** in this work. Layout and phone usability only (see M3).
+3. **No Android APK or Play Store listing.** The PWA is the only phone version.
 
 ### Definition of done
 - `npm run typecheck` clean, `npx vitest run` green (desktop tests unchanged and passing, new web and platform tests
