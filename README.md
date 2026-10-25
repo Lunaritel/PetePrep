@@ -8,6 +8,7 @@ questions you have not mastered until every one sticks.
 - Explanations are shown word for word from the answer key.
 - A question counts as mastered after two correct answers in a row. A wrong answer sends it back to learning.
 - Questions with a picture or table are shown as a screenshot of the original page area.
+- A **mistake bank** keeps every question you miss, across all your exams. Drill just one exam's misses (**Weak points**) or mix them all together. A question leaves the bank after you get it right in two separate rounds.
 
 ## Download and install
 

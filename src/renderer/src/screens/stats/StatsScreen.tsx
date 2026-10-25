@@ -2,11 +2,12 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 import type { MasteryStatus } from '../../../../core/domain';
 import type { ScreenProps } from '../../app/types';
 import { loadStudy, type Study } from '../../storage/studyService';
-import type { SessionRow } from '../../storage/contract';
+import { BANK_EXAM_ID, type SessionRow } from '../../storage/contract';
 import { formatDate, formatDuration } from '../library/format';
 import { btnSecondary, card } from '../library/ui';
 import {
   computeExamStats,
+  sessionKindLabel,
   sortQuestions,
   type ExamStats,
   type SessionStat,
@@ -15,6 +16,20 @@ import {
 } from './computeStats';
 
 type StatusFilter = 'all' | MasteryStatus;
+
+const KIND_FILL: Record<SessionStat['kind'], string> = {
+  practice: 'fill-correct',
+  master: 'fill-accent',
+  weak: 'fill-warn',
+  bank: 'fill-accent-strong',
+};
+const KIND_SWATCH: Record<SessionStat['kind'], string> = {
+  practice: 'bg-correct',
+  master: 'bg-accent',
+  weak: 'bg-warn',
+  bank: 'bg-accent-strong',
+};
+const LEGEND_ORDER: SessionStat['kind'][] = ['practice', 'master', 'weak', 'bank'];
 
 const FILTERS: { value: StatusFilter; label: string }[] = [
   { value: 'all', label: 'All' },
@@ -59,7 +74,8 @@ export function StatsScreen({ repo, navigate, examId }: ScreenProps & { examId: 
     (async () => {
       try {
         const study = await loadStudy(repo, examId);
-        const sessions: SessionRow[] = await repo.listSessions(examId);
+        // Mixed mistake-bank rounds are stored under BANK_EXAM_ID; computeExamStats keeps only this exam's share.
+        const sessions: SessionRow[] = [...(await repo.listSessions(examId)), ...(await repo.listSessions(BANK_EXAM_ID))];
         if (!cancelled) setLoaded({ study, stats: computeExamStats(study, sessions) });
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : 'The statistics could not be loaded.');
@@ -278,9 +294,9 @@ function Timeline({ sessions }: { sessions: SessionStat[] }) {
               width={barWidth * 0.7}
               height={height}
               rx={0.5}
-              className={s.kind === 'master' ? 'fill-accent' : 'fill-correct'}
+              className={KIND_FILL[s.kind]}
             >
-              <title>{`${formatDate(s.startedAt)} · ${s.kind}: ${s.scorePct === null ? 'no answers' : `${s.scorePct}%`}`}</title>
+              <title>{`${formatDate(s.startedAt)} · ${sessionKindLabel(s.kind)}: ${s.scorePct === null ? 'no answers' : `${s.scorePct}%`}`}</title>
             </rect>
           );
         })}
@@ -289,21 +305,25 @@ function Timeline({ sessions }: { sessions: SessionStat[] }) {
         {sessions.map((s) => (
           <li key={s.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
             <span className="text-ink">
-              {formatDate(s.startedAt)} · {s.kind === 'master' ? 'Master exam' : 'Practice'}
+              {formatDate(s.startedAt)} · {sessionKindLabel(s.kind)}
             </span>
             <span className="text-muted">
               {s.answered === 0
                 ? 'No answers'
                 : `${s.correct} of ${s.answered} correct (${s.scorePct}%)`}
               {' · '}
-              {s.durationMs === null ? 'In progress' : formatDuration(s.durationMs)}
+              {s.kind === 'bank' ? 'Mixed round' : s.durationMs === null ? 'In progress' : formatDuration(s.durationMs)}
             </span>
           </li>
         ))}
       </ol>
-      <p className="text-xs text-muted">
-        <span className="mr-1 inline-block h-2 w-2 rounded-sm bg-correct align-middle" /> Practice{' '}
-        <span className="mx-1 inline-block h-2 w-2 rounded-sm bg-accent align-middle" /> Master exam
+      <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
+        {LEGEND_ORDER.filter((kind) => sessions.some((s) => s.kind === kind)).map((kind) => (
+          <span key={kind} className="inline-flex items-center gap-1">
+            <span className={`inline-block h-2 w-2 rounded-sm ${KIND_SWATCH[kind]}`} />
+            {sessionKindLabel(kind)}
+          </span>
+        ))}
       </p>
     </div>
   );

@@ -36,7 +36,14 @@ export interface QuestionRow {
   snapshot?: Blob;
 }
 
-export type SessionKind = 'practice' | 'master';
+/**
+ * practice: the whole exam once. master: everything not yet mastered. weak: only this exam's mistake bank.
+ * bank: the mistake bank of ALL exams mixed (its sessions use BANK_EXAM_ID as examId).
+ */
+export type SessionKind = 'practice' | 'master' | 'weak' | 'bank';
+
+/** examId of sessions that span several exams (the mixed mistake-bank drill). Never a real exam id. */
+export const BANK_EXAM_ID = '*';
 
 export interface SessionRow {
   id: string;

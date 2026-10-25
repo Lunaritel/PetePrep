@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { ScreenProps } from '../../app/types';
-import { buildMasterPool, statusOf } from '../../storage/studyService';
+import { HELP } from '../../app/helpText';
+import { buildMasterPool, statusOf, weakQuestions } from '../../storage/studyService';
 import type { Study } from '../../storage/studyService';
 import { StudyFlow } from '../../study/StudyFlow';
 import { Card, MasteryBar, Page, PrimaryButton, SecondaryButton } from '../../study/ui';
@@ -15,12 +16,14 @@ interface StartProps {
   onResume: () => void;
   onLibrary: () => void;
   onStats: () => void;
+  onWeak: () => void;
 }
 
-function MasterStart({ study, unfinished, busy, onBegin, onResume, onLibrary, onStats }: StartProps) {
+function MasterStart({ study, unfinished, busy, onBegin, onResume, onLibrary, onStats, onWeak }: StartProps) {
   const [mix, setMix] = useState(0);
   const masteredCount = study.questions.filter((q) => statusOf(study, q.id) === 'mastered').length;
   const pendingCount = study.questions.length - masteredCount;
+  const weakCount = weakQuestions(study).length;
   const poolSize = useMemo(() => buildMasterPool(study, { mixMasteredPercent: mix }).length, [study, mix]);
 
   if (pendingCount === 0 && study.questions.length > 0) {
@@ -48,6 +51,10 @@ function MasterStart({ study, unfinished, busy, onBegin, onResume, onLibrary, on
       <Card>
         <h1 className="text-2xl font-bold">{study.exam.title}</h1>
         <p className="mt-1 text-muted">Master exam</p>
+        <p className="mt-3 text-sm text-muted">{HELP.master.long}</p>
+        <p className="mt-2 text-sm text-muted">
+          Only want the questions you missed? Use {HELP.weak.label} instead: {HELP.weak.short.toLowerCase()}
+        </p>
         <p className="mt-4 text-lg">
           <strong>{pendingCount}</strong> {pendingCount === 1 ? 'question' : 'questions'} still to master
           {mix > 0 && poolSize > pendingCount ? ` (+${poolSize - pendingCount} for review)` : ''}.
@@ -96,6 +103,11 @@ function MasterStart({ study, unfinished, busy, onBegin, onResume, onLibrary, on
               Start
             </PrimaryButton>
           )}
+          {weakCount > 0 && (
+            <SecondaryButton onClick={onWeak}>
+              {HELP.weak.label} ({weakCount})
+            </SecondaryButton>
+          )}
           <SecondaryButton onClick={onLibrary}>Back to library</SecondaryButton>
         </div>
       </Card>
@@ -121,6 +133,7 @@ export function MasterScreen({ repo, navigate, examId, sessionId }: Props) {
           onResume={resume}
           onLibrary={() => navigate({ name: 'library' })}
           onStats={() => navigate({ name: 'stats', examId })}
+          onWeak={() => navigate({ name: 'weak', examId })}
         />
       )}
     />

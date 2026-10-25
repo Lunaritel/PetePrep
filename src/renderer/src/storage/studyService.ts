@@ -1,6 +1,7 @@
 import { computeStatus, getProgress, isMasteryComplete } from '../../../core/mastery';
 import type { Attempt, Exam, MasteryState, MasteryStatus, Progress, Question } from '../../../core/domain';
 import type { AnswerRow, ExamRow, QuestionRow, Repository, SessionKind, SessionRow } from './contract';
+import { deriveReview, isInMistakeBank, type ReviewInfo } from './mistakeBank';
 
 export const LETTERS = ['A', 'B', 'C', 'D'] as const;
 
@@ -13,6 +14,8 @@ export interface Study {
   state: MasteryState;
   progress: Progress;
   complete: boolean;
+  /** Mistake-bank bookkeeping per question id (see mistakeBank.ts). */
+  review: Map<string, ReviewInfo>;
 }
 
 export function toCoreExam(exam: ExamRow, rows: QuestionRow[]): Exam {
@@ -59,7 +62,7 @@ export async function loadStudy(repo: Repository, examId: string): Promise<Study
   const answers = await repo.listAnswers(examId);
   const core = toCoreExam(exam, questions);
   const state = deriveState(core, answers);
-  return { exam, questions, answers, core, state, progress: getProgress(state, core), complete: isMasteryComplete(state, core) };
+  return { exam, questions, answers, core, state, progress: getProgress(state, core), complete: isMasteryComplete(state, core), review: deriveReview(answers) };
 }
 
 export function statusOf(study: Study, questionId: string): MasteryStatus {
@@ -127,4 +130,9 @@ export async function answerQuestion(
 export function nextUnanswered(session: SessionRow, answers: AnswerRow[]): string | undefined {
   const done = new Set(answers.filter((a) => a.sessionId === session.id).map((a) => a.questionId));
   return session.questionIds.find((id) => !done.has(id));
+}
+
+/** This exam's questions that are currently in the mistake bank, in printed order. */
+export function weakQuestions(study: Study): QuestionRow[] {
+  return study.questions.filter((q) => isInMistakeBank(study.review.get(q.id)));
 }

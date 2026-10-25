@@ -1,4 +1,4 @@
-import { BackupFormatError } from './contract';
+import { BANK_EXAM_ID, BackupFormatError } from './contract';
 import type { AnswerRow, BackupFile, BackupQuestion, ExamRow, QuestionRow, SessionRow } from './contract';
 
 export interface DatabaseSnapshot {
@@ -153,9 +153,10 @@ export async function parseBackup(input: unknown): Promise<DatabaseSnapshot> {
     const where = `Session ${i + 1}`;
     if (!isRecord(raw)) fail(`${where} is malformed.`);
     const examId = str(raw, 'examId', where);
-    if (!examIds.has(examId)) fail(`${where} belongs to an exam that is not in the backup.`);
+    if (examId !== BANK_EXAM_ID && !examIds.has(examId)) fail(`${where} belongs to an exam that is not in the backup.`);
     const kind = str(raw, 'kind', where);
-    if (kind !== 'practice' && kind !== 'master') fail(`${where} has an unknown kind.`);
+    if (kind !== 'practice' && kind !== 'master' && kind !== 'weak' && kind !== 'bank') fail(`${where} has an unknown kind.`);
+    if ((kind === 'bank') !== (examId === BANK_EXAM_ID)) fail(`${where} has a kind that does not match its exam.`);
     const ids = raw.questionIds;
     if (!Array.isArray(ids) || ids.some((x) => typeof x !== 'string')) fail(`${where} has a bad question list.`);
     return {

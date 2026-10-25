@@ -1,5 +1,6 @@
 import { Component, useCallback, useEffect, useState } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
+import { BankScreen } from '../screens/bank';
 import { ImportScreen } from '../screens/import';
 import { LibraryScreen } from '../screens/library';
 import { MasterScreen } from '../screens/master';
@@ -7,6 +8,7 @@ import { Onboarding, hasSeenOnboarding, markOnboardingSeen } from '../screens/on
 import { PracticeScreen } from '../screens/practice';
 import { ResultsScreen } from '../screens/results';
 import { SettingsScreen } from '../screens/settings';
+import { WeakScreen } from '../screens/weak';
 import { StatsScreen } from '../screens/stats';
 import type { Repository } from '../storage/contract';
 import type { Route } from './types';
@@ -72,6 +74,10 @@ function renderRoute(route: Route, repo: Repository, navigate: (route: Route) =>
       return <PracticeScreen {...props} examId={route.examId} sessionId={route.sessionId} />;
     case 'master':
       return <MasterScreen {...props} examId={route.examId} sessionId={route.sessionId} />;
+    case 'weak':
+      return <WeakScreen {...props} examId={route.examId} sessionId={route.sessionId} />;
+    case 'bank':
+      return <BankScreen {...props} sessionId={route.sessionId} />;
     case 'results':
       return <ResultsScreen {...props} examId={route.examId} sessionId={route.sessionId} />;
     case 'stats':
@@ -83,6 +89,7 @@ function renderRoute(route: Route, repo: Repository, navigate: (route: Route) =>
 
 const NAV: { label: string; route: Route; matches: Route['name'][] }[] = [
   { label: 'Library', route: { name: 'library' }, matches: ['library'] },
+  { label: 'Mistake bank', route: { name: 'bank' }, matches: ['bank'] },
   { label: 'Import exam', route: { name: 'import' }, matches: ['import'] },
   { label: 'Settings', route: { name: 'settings' }, matches: ['settings'] },
 ];
@@ -114,7 +121,8 @@ export function Shell({ repo }: { repo: Repository }) {
     );
   }
 
-  const studying = route.name === 'practice' || route.name === 'master';
+  const studying =
+    route.name === 'practice' || route.name === 'master' || route.name === 'weak' || (route.name === 'bank' && !!route.sessionId);
 
   return (
     <div className="min-h-screen bg-bg text-ink">

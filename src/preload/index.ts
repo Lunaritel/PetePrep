@@ -1,6 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type { UpdateState } from './updateTypes';
 
+/** Injected at build time from package.json (see electron.vite.config.ts). */
+declare const __APP_VERSION__: string;
+
 export interface PickedFile {
   name: string;
   data: Uint8Array;
@@ -13,7 +16,7 @@ export interface PickedText {
 
 const api = {
   appName: 'PetePrep',
-  version: '0.1.0',
+  version: __APP_VERSION__,
   /** Native "open" dialog filtered to PDFs. Resolves null if the user cancels. */
   openPdf: (): Promise<PickedFile | null> => ipcRenderer.invoke('file:open-pdf'),
   /** Native "save as" dialog; resolves the chosen path, or null if cancelled. */

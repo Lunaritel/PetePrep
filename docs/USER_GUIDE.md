@@ -63,22 +63,45 @@ From the **Library**, click **Practice** on your exam.
 - Option order never changes, so the explanations that mention letters stay correct.
 - You can leave any time with **Exit**. Every answer is saved as you go, and you can resume later.
 
-## 5. Master exam
+## 5. What each button does
 
-A question counts as **mastered** after you answer it correctly twice in a row. A wrong answer sends it back
-to learning.
+Each exam card in the Library has these buttons. The Library also has a collapsible **What does each button do?**
+panel, and every start screen explains itself.
 
-1. Click **Master exam** in the Library (or **Start next master round** after a round).
-2. PetePrep builds a round from every question you have not mastered yet.
-3. Repeat rounds until the Library shows 100% mastered. At that point the app stops offering rounds.
+| Button | What it does | When to use it |
+|---|---|---|
+| **Practice** | Asks the whole exam once, in order (or shuffled). | Your first run through a new exam. |
+| **Master exam** | Builds a round from everything you have not mastered yet: questions you have not seen, and ones you have not answered correctly twice in a row. Repeat until the exam reaches 100%. | Working an exam all the way to mastered. |
+| **Weak points** | Only the questions from this exam that you got wrong (its part of the mistake bank). | Fixing mistakes fast, one exam at a time. |
+| **Mistake bank** (top menu, and the strip above your exams) | Every question you have missed, from all your exams, mixed into one drill. | Reviewing mistakes across exams. |
+| **Stats** | Your weakest questions, accuracy and time, and a chart of your rounds. | Seeing where to focus. |
+| **Reset progress** | Forgets your answers for this exam. The questions stay. | Starting an exam fresh. |
+| **Delete** | Removes the exam and all its progress. | Getting rid of an exam. |
 
-Once some questions are mastered, you can drag a slider to mix a few of them back in for review.
+### How the mistake bank works
+
+- A question goes in when you get it wrong.
+- It leaves after you answer it correctly in **two separate rounds**. A question never appears twice inside one round,
+  so the two correct answers always come from different rounds.
+- If you miss it again, it goes straight back in.
+- The same rule applies whether the rounds were Weak points, the mixed Mistake bank drill, Master exam or Practice.
+
+For example: you miss 30 questions in Practice. **Weak points** asks exactly those 30. Say you get 25 right and 5 wrong.
+The 25 now need one more correct round, and the 5 still need two. The next Weak points round asks all 30 again
+(none has left yet). If you get the 25 right again they leave the bank, and the 5 then need one more correct round.
+
+If two of your exams contain the same question, it can appear once for each exam, but never back to back.
+
+### Master exam versus Weak points
+
+Master exam asks for everything not yet mastered, which includes questions you answered right only once. If you want
+**only what you got wrong**, use **Weak points** (one exam) or the **Mistake bank** drill (all exams).
 
 ## 6. Check your progress
 
-- **Library**: a card per exam with mastered, learning and unseen counts.
-- **Stats**: weakest questions first, accuracy and average time per question, and a chart of your rounds.
-- **Results**: after every round, a list of each question you got right or wrong.
+- **Library**: a card per exam with mastered, learning, unseen and mistake-bank counts.
+- **Stats**: weakest questions first, accuracy and average time per question, and a chart of your rounds, including Weak points and mixed Mistake bank rounds.
+- **Results**: after every round, a list of each question you got right or wrong, and how many questions are left in your mistake bank.
 
 ## 7. Keep your data safe
 

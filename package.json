@@ -1,6 +1,6 @@
 {
   "name": "peteprep",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DECA exam practice app with mastery-based retesting",
   "main": "out/main/index.js",
   "private": true,

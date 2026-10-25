@@ -16,6 +16,20 @@ export interface QuestionStat {
   avgTimeMs: number | null;
 }
 
+/** Plain-language name of a round kind, used in the timeline and chart. */
+export function sessionKindLabel(kind: SessionKind): string {
+  switch (kind) {
+    case 'practice':
+      return 'Practice';
+    case 'master':
+      return 'Master exam';
+    case 'weak':
+      return 'Weak points';
+    case 'bank':
+      return 'Mistake bank, mixed';
+  }
+}
+
 export interface SessionStat {
   id: string;
   kind: SessionKind;
@@ -88,23 +102,32 @@ export function computeExamStats(study: Study, sessions: SessionRow[]): ExamStat
     };
   });
 
-  const sessionStats: SessionStat[] = sessions.map((s) => {
+  // Mixed mistake-bank rounds span several exams; only this exam's questions and answers are counted here,
+  // and a mixed round that never touched this exam is left out.
+  const sessionStats: SessionStat[] = sessions.flatMap((s): SessionStat[] => {
     const mine = replay.filter((a) => a.sessionId === s.id);
+    if (s.kind === 'bank' && mine.length === 0) return [];
     const correct = mine.filter((a) => a.correct).length;
     const duration =
       s.completedAt !== undefined ? new Date(s.completedAt).getTime() - new Date(s.startedAt).getTime() : null;
-    return {
-      id: s.id,
-      kind: s.kind,
-      startedAt: s.startedAt,
-      completedAt: s.completedAt,
-      answered: mine.length,
-      correct,
-      total: s.questionIds.length,
-      scorePct: pct(correct, mine.length),
-      durationMs: duration !== null && Number.isFinite(duration) && duration >= 0 ? duration : null,
-    };
+    return [
+      {
+        id: s.id,
+        kind: s.kind,
+        startedAt: s.startedAt,
+        completedAt: s.completedAt,
+        answered: mine.length,
+        correct,
+        total: s.kind === 'bank' ? s.questionIds.filter((id) => known.has(id)).length : s.questionIds.length,
+        scorePct: pct(correct, mine.length),
+        // A mixed round has one clock for all exams, so its length is not attributed to a single exam.
+        durationMs:
+          s.kind !== 'bank' && duration !== null && Number.isFinite(duration) && duration >= 0 ? duration : null,
+      },
+    ];
   });
+  // Rounds that start in the same instant keep their creation order (ids are time-ordered).
+  sessionStats.sort((a, b) => a.startedAt.localeCompare(b.startedAt) || a.id.localeCompare(b.id));
 
   const correctTotal = replay.filter((a) => a.correct).length;
   return {

@@ -1,4 +1,4 @@
-import { DuplicateExamError } from './contract';
+import { BANK_EXAM_ID, DuplicateExamError } from './contract';
 import type {
   AnswerRow,
   BackupFile,
@@ -67,7 +67,9 @@ export function createMemoryRepository(): Repository {
       return questions.filter((q) => q.examId === examId).sort((a, b) => a.number - b.number);
     },
     async createSession(session: NewSession) {
-      if (!exams.some((e) => e.id === session.examId)) throw new Error(`Exam ${session.examId} not found.`);
+      if (session.examId !== BANK_EXAM_ID && !exams.some((e) => e.id === session.examId)) {
+        throw new Error(`Exam ${session.examId} not found.`);
+      }
       const row: SessionRow = { ...session, id: newId('sess'), startedAt: new Date().toISOString() };
       sessions.push(row);
       return row;

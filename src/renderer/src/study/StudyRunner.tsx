@@ -11,6 +11,8 @@ interface Props {
   /** Every studyable question of the exam; the session's own list decides order and membership. */
   questions: QuestionRow[];
   heading: string;
+  /** When set (mixed-exam drills), each question shows a chip with the title of the exam it came from. */
+  examTitles?: ReadonlyMap<string, string>;
   /** Leaves without ending the session. Every answer is already saved, so it can be resumed. */
   onExit: () => void;
   /** Called once, after the session is marked complete. */
@@ -30,7 +32,7 @@ function isTypingTarget(target: EventTarget | null): boolean {
 }
 
 /** One-question-at-a-time loop shared by practice and master rounds. Option order is never changed. */
-export function StudyRunner({ repo, session, questions, heading, onExit, onFinished }: Props) {
+export function StudyRunner({ repo, session, questions, heading, examTitles, onExit, onFinished }: Props) {
   const order = useMemo(() => {
     const byId = new Map(questions.map((q) => [q.id, q]));
     return session.questionIds.flatMap((id) => {
@@ -179,6 +181,16 @@ export function StudyRunner({ repo, session, questions, heading, onExit, onFinis
       </div>
 
       <Card>
+        {examTitles && examTitles.get(question.examId) && (
+          <p className="mb-3">
+            <span
+              data-testid="exam-chip"
+              className="inline-block max-w-full truncate rounded-full border border-line bg-bg px-3 py-0.5 align-middle text-xs font-semibold text-muted"
+            >
+              {examTitles.get(question.examId)}
+            </span>
+          </p>
+        )}
         <SnapshotImage blob={question.snapshot} alt={`Question ${question.number} as printed in the exam PDF`} className="mb-4 w-full rounded-lg border border-line bg-surface" />
         <h2 ref={headingRef} tabIndex={-1} className={question.snapshot ? 'sr-only' : 'mb-4 text-xl font-semibold leading-snug outline-none'}>
           {question.prompt}

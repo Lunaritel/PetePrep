@@ -7,7 +7,10 @@ import { LibraryScreen } from './LibraryScreen';
 import { answer, seedExam } from './testSeed';
 import { formatDuration, formatRelative } from './format';
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  window.localStorage.clear();
+});
 
 describe('LibraryScreen', () => {
   it('shows a friendly empty state and routes to import', async () => {
@@ -81,7 +84,7 @@ describe('LibraryScreen', () => {
 
     render(<LibraryScreen repo={repo} navigate={vi.fn()} />);
     await screen.findByRole('heading', { name: 'Newer' });
-    const titles = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
+    const titles = within(screen.getByRole('list')).getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
     expect(titles).toEqual(['Newer', 'Older', 'Never']);
   });
 

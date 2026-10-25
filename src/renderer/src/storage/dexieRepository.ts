@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import { DuplicateExamError } from './contract';
+import { BANK_EXAM_ID, DuplicateExamError } from './contract';
 import type {
   AnswerRow,
   BackupFile,
@@ -106,7 +106,9 @@ export function createDexieRepository(name = 'deca-mastery'): Repository {
 
     async createSession(session: NewSession) {
       return db.transaction('rw', db.exams, db.sessions, async () => {
-        if (!(await db.exams.get(session.examId))) throw new Error(`Exam ${session.examId} not found.`);
+        if (session.examId !== BANK_EXAM_ID && !(await db.exams.get(session.examId))) {
+          throw new Error(`Exam ${session.examId} not found.`);
+        }
         const row: SessionRow = { ...session, id: newId('sess'), startedAt: new Date().toISOString() };
         await db.sessions.add(row);
         return row;

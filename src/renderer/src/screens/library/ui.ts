@@ -4,5 +4,7 @@ const base =
 
 export const btnPrimary = `${base} bg-accent text-on-accent hover:bg-accent-strong`;
 export const btnSecondary = `${base} border border-line bg-surface text-ink hover:bg-bg`;
+/** Low-emphasis action (reset, delete): still a full-size target, but it does not compete with study buttons. */
+export const btnQuiet = `${base} text-muted hover:bg-bg hover:text-ink`;
 export const btnDanger = `${base} bg-wrong text-on-accent hover:opacity-90`;
 export const card = 'rounded-2xl border border-line bg-surface p-5 shadow-sm';

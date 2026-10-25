@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { ScreenProps } from '../../app/types';
+import { HELP } from '../../app/helpText';
 import { shuffle } from '../../storage/studyService';
 import { StudyFlow } from '../../study/StudyFlow';
 import { Card, MasteryBar, Page, PrimaryButton, SecondaryButton } from '../../study/ui';
@@ -22,6 +23,7 @@ export function PracticeScreen({ repo, navigate, examId, sessionId }: Props) {
           <Card>
             <h1 className="text-2xl font-bold">{study.exam.title}</h1>
             <p className="mt-1 text-muted">Practice · {study.questions.length} questions</p>
+            <p className="mt-3 text-sm text-muted">{HELP.practice.long}</p>
             <div className="my-5">
               <MasteryBar progress={study.progress} />
             </div>
